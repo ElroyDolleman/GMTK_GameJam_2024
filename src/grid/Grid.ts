@@ -14,8 +14,8 @@ export class Grid<T>
 {
 	private readonly _cells: T[];
 
-	public readonly gridCellsX: number;
-	public readonly gridCellsY: number;
+	public readonly rows: number;
+	public readonly columns: number;
 
 	public readonly cellWidth: number;
 	public readonly cellHeight: number;
@@ -24,8 +24,8 @@ export class Grid<T>
 	{
 		this._cells = cells;
 
-		this.gridCellsX = settings.gridCellsX;
-		this.gridCellsY = settings.gridCellsY;
+		this.rows = settings.gridCellsX;
+		this.columns = settings.gridCellsY;
 
 		this.cellWidth = settings.cellWidth;
 		this.cellHeight = settings.cellHeight;
@@ -38,7 +38,7 @@ export class Grid<T>
 
 	public getIndexByLocation(cellX: number, cellY: number): number
 	{
-		return cellX + (cellY * this.gridCellsX);
+		return cellX + (cellY * this.rows);
 	}
 
 	public getCellByIndex(index: number): T
@@ -62,8 +62,8 @@ export class Grid<T>
 		const minX = Math.max(0, this.toCellX(cx - radius));
 		const minY = Math.max(0, this.toCellY(cy - radius));
 
-		const maxX = Math.min(this.gridCellsX - 1, this.toCellX(cx + radius));
-		const maxY = Math.min(this.gridCellsY - 1, this.toCellY(cy + radius));
+		const maxX = Math.min(this.rows - 1, this.toCellX(cx + radius));
+		const maxY = Math.min(this.columns - 1, this.toCellY(cy + radius));
 
 		for (let y = minY; y <= maxY; y++)
 		{
