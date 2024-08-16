@@ -77,6 +77,18 @@ export class IO
 		});
 	}
 
+	static async copyAllFilesFromFolder(directory, destination)
+	{
+		console.log(`Copy folder ${directory} to ${destination}`);
+		this.ensureFolderExists(destination);
+
+		const files = await this.getAllFilesInFolder(directory);
+		for (let i = 0; i < files.length; i++)
+		{
+			await IO.copyFile(path.join(directory, files[i]), path.join(destination, files[i]))
+		}
+	}
+
 	static ensureFolderExists(folderPath)
 	{
 		if (!fs.existsSync(folderPath)) {

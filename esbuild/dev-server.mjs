@@ -1,10 +1,9 @@
 import { copy } from 'esbuild-plugin-copy';
-import { commands } from "../scripts/commands.mjs";
+import { Commands } from "../scripts/commands.mjs";
 import esBuildServer from 'esbuild-server';
 
 (async () => {
-  await commands.run("npm run buildAssets");
-  return;
+  // await Commands.run("npm run buildAssets");
 
   const server = await esBuildServer.createServer({
       bundle: true,

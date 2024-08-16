@@ -2,7 +2,7 @@ import cmd from "node-cmd";
 import { IO } from "./io.mjs"
 import path from "path";
 
-export class commands
+export class Commands
 {
 	static run(command)
 	{
