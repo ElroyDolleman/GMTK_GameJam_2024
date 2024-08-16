@@ -1,0 +1,21 @@
+{
+  "name": "gmtk_gamejam_2024",
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Elroy Dolleman",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "esbuild-plugin-copy": "^2.1.1",
+    "phaser": "^3.80.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.23.0",
+    "esbuild-server": "^0.3.0",
+    "free-tex-packer-core": "^0.3.4",
+    "typescript": "^5.5.4"
+  }
+}
