@@ -13,9 +13,11 @@
     "phaser": "^3.80.1"
   },
   "devDependencies": {
+    "@types/node": "^22.3.0",
     "esbuild": "^0.23.0",
     "esbuild-server": "^0.3.0",
     "free-tex-packer-core": "^0.3.4",
+    "node-cmd": "^5.0.0",
     "typescript": "^5.5.4"
   }
 }

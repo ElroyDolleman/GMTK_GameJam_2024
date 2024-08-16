@@ -1,6 +1,9 @@
 # Custom
-assets/build_files/
+build_assets/
 build
+
+# Tiled
+*.tiled-session
 
 # Logs
 logs
