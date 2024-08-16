@@ -3,8 +3,7 @@ import { commands } from "../scripts/commands.mjs";
 import esBuildServer from 'esbuild-server';
 
 (async () => {
-  console.log(commands);
-  await commands.exportTiledTilesets("assets/maps/tilesets/", "build_assets/tilesets/");
+  await commands.run("npm run buildAssets");
   return;
 
   const server = await esBuildServer.createServer({
