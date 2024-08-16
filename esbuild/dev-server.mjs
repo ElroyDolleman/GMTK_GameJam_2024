@@ -7,7 +7,7 @@ import esBuildServer from 'esbuild-server';
 
   const server = await esBuildServer.createServer({
       bundle: true,
-      entryPoints: ['src/app.ts'],
+      entryPoints: ['src/App.ts'],
       outfile: 'dist/index.js',
       plugins: [
         copy({
