@@ -51,25 +51,6 @@ export class GameScene extends Scene
 			keyboard: this.input.keyboard,
 			level
 		});
-
-		const player1 = new Player({
-			scene: this,
-			grid: level.getGrid(0),
-			location: { x: 4, y: 7 }
-		});
-		level.addEntity(player1);
-		const player2 = new PlayerExtender({
-			scene: this,
-			grid: level.getGrid(0),
-			location: { x: 7, y: 9 }
-		});
-		level.addEntity(player2);
-		const player3 = new PlayerExtender({
-			scene: this,
-			grid: level.getGrid(0),
-			location: { x: 7, y: 6 }
-		});
-		level.addEntity(player3);
 	}
 
 	public update(time: number, delta: number): void

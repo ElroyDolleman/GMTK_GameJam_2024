@@ -1,3 +1,5 @@
+import { EntityTypes } from "../entities/GridEntity";
+import { IPoint } from "../geometry/IPoint";
 import { TilesetData } from "./TilesetData";
 
 export type LayerType = "tilelayer" | "objectgroup";
@@ -15,10 +17,17 @@ export type TileLayerData =
     tiles: number[];
 } & LayerData;
 
+export type ObjectData =
+{
+    name: string;
+    type: EntityTypes;
+    position: IPoint;
+}
+
 export type ObjectLayerData =
 {
     type: "objectgroup";
-    objects: any[];
+    objects: ObjectData[];
 } & LayerData;
 
 export type LevelData =

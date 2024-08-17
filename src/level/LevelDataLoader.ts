@@ -1,6 +1,7 @@
 import { Loader, Cache, Types } from "phaser";
-import { LayerData, LayerType, LevelData, ObjectLayerData, TileLayerData } from "./LevelData";
+import { LayerData, LayerType, LevelData, ObjectData, ObjectLayerData, TileLayerData } from "./LevelData";
 import { TileData, TilesetData, TileType } from "./TilesetData";
+import { EntityTypes } from "../entities/GridEntity";
 
 export type LevelLoaderOptions =
 {
@@ -131,9 +132,32 @@ export class LevelDataLoader
                     type: layer["type"] as LayerType,
                     name: layer["name"] ?? "",
                     id: layer["id"] ?? -1,
-                    objects: [],
+                    objects: this._getObjects(layer),
                 } as ObjectLayerData;
         }
         throw `Unsupported layer type ${layer?.["type"]}`;
+    }
+
+    private static _getObjects(layer: any): ObjectData[]
+    {
+        const objects = layer["objects"] ?? [];
+        const result: ObjectData[] = [];
+
+        for (let i = 0; i < objects.length; i++)
+        {
+            const name = objects[i]?.["name"] ?? "None";
+            const type: EntityTypes = EntityTypes[name] as any ?? EntityTypes.None;
+
+            if (type === EntityTypes.None)
+            {
+                console.warn("Entity without type added");
+            }
+
+            const position = { x: objects[i]?.["x"] ?? 0, y: objects[i]?.["y"] ?? 0 };
+
+            result.push({ name, type, position });
+        }
+
+        return result;
     }
 }

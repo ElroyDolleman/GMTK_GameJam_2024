@@ -1,7 +1,7 @@
 import { GameObjects, Scene } from "phaser";
 import { Grid } from "../grid/Grid";
 import { Tile } from "../grid/tiles/Tile";
-import { LayerData, LevelData, TileLayerData } from "./LevelData";
+import { LayerData, LevelData, ObjectLayerData, TileLayerData } from "./LevelData";
 import { TileType } from "./TilesetData";
 import { EmptyTile } from "../grid/tiles/EmptyTile";
 import { EntityTypes, GridEntity } from "../entities/GridEntity";
@@ -41,6 +41,9 @@ export class Level
             {
                 case "tilelayer":
                     this._grids.push(this._createGrid(layerData as TileLayerData));
+                    break;
+                case "objectgroup":
+                    this._createEntities(layerData as ObjectLayerData);
                     break;
             }
         });
@@ -179,6 +182,29 @@ export class Level
             cellWidth: this._levelData.tileWidth,
             cellHeight: this._levelData.tileHeight,
             cells
+        });
+    }
+
+    private _createEntities(layerData: ObjectLayerData): void
+    {
+        const grid = this.getGrid(0);
+        layerData.objects.forEach(data =>
+        {
+            const location = grid.toGridLocation(data.position.x, data.position.y);
+            const sprite = this.scene.add.sprite(0, 0, "main", "player");
+
+            // HACK: Everything is off by one for some reason
+            location.y--;
+
+            this.addEntity(new GridEntity({
+                hitbox: { x: 0, y: 0, width: 16, height: 16 },
+                location: location,
+                scene: this.scene,
+                type: data.type,
+                grid,
+                sprite
+            }));
+            sprite.setOrigin(0, 0);
         });
     }
 
