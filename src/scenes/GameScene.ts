@@ -2,10 +2,13 @@ import { Scene } from "phaser";
 import { LevelDataLoader } from "../level/LevelDataLoader";
 import { Level } from "../level/Level";
 import { Player } from "../player/Player";
+import { ActionManager } from "../input/ActionManager";
 
 export class GameScene extends Scene
 {
 	public static key = "GameScene";
+
+	public actionManager!: ActionManager;
 
 	public constructor()
 	{
@@ -33,39 +36,48 @@ export class GameScene extends Scene
 	{
 		console.log("create");
 
+		if (this.input.keyboard === null)
+		{
+			console.error("Keyboard disabled :C");
+			return;
+		}
+
 		const levelData = LevelDataLoader.getLevelData(this.cache, "playground-level");
 		const level = new Level(this, levelData);
+
+		this.actionManager = new ActionManager({
+			keyboard: this.input.keyboard,
+			level
+		});
 
 		const player1 = new Player({
 			scene: this,
 			grid: level.getGrid(0),
-			location: { x: 7, y: 7 }
+			location: { x: 4, y: 7 }
 		});
 		level.addEntity(player1);
 		const player2 = new Player({
 			scene: this,
 			grid: level.getGrid(0),
-			location: { x: 8, y: 8 }
+			location: { x: 7, y: 9 }
 		});
 		level.addEntity(player2);
+		const player3 = new Player({
+			scene: this,
+			grid: level.getGrid(0),
+			location: { x: 7, y: 6 }
+		});
+		level.addEntity(player3);
 
 		this._moveTest(level);
 	}
 
+	public update(time: number, delta: number): void
+	{
+		this.actionManager.update();
+	}
+
 	private async _moveTest(level: Level): Promise<void>
 	{
-		await level.inputMove({ x: 1, y: 0 }, 500);
-		await level.inputMove({ x: 1, y: 0 }, 500);
-		await level.inputMove({ x: 0, y: 1 }, 500);
-		await level.inputMove({ x: 0, y: 1 }, 500);
-		await level.inputMove({ x: 0, y: 1 }, 500);
-		await level.inputMove({ x: 0, y: 1 }, 500);
-		await level.inputMove({ x: 0, y: 1 }, 500);
-		await level.inputMove({ x: 0, y: 1 }, 500);
-		await level.inputMove({ x: 0, y: 1 }, 500);
-		await level.inputMove({ x: 0, y: 1 }, 500);
-		await level.inputMove({ x: -1, y: 0 }, 500);
-		await level.inputMove({ x: 0, y: 1 }, 500);
-		await level.inputMove({ x: 0, y: 1 }, 500);
 	}
 }

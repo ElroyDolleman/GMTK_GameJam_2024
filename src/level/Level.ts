@@ -165,7 +165,6 @@ export class Level
         {
             default:
             case "empty":
-                console.log("empty", tileId);
                 return new EmptyTile({
                     location: { row: gridX, column: gridY },
                     sprite

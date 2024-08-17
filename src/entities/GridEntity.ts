@@ -128,6 +128,11 @@ export class GridEntity implements ISceneObject, IComponentManager<IGridEntityCo
 		{
 			throw "Can't move diagonally >:c";
 		}
+		if (amountX === 0 && amountY === 0)
+		{
+			// We went absolutely no where :D
+			return Promise.resolve();
+		}
 
 		return new Promise<void>(resolve =>
 		{
