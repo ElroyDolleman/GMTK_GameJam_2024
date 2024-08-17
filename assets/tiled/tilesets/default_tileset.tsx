@@ -81,6 +81,16 @@
    <property name="type" value="pit"/>
   </properties>
  </tile>
+ <tile id="25">
+  <properties>
+   <property name="type" value="pit"/>
+  </properties>
+ </tile>
+ <tile id="26">
+  <properties>
+   <property name="type" value="pit"/>
+  </properties>
+ </tile>
  <tile id="32">
   <properties>
    <property name="type" value="solid"/>

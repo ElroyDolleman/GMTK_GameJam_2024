@@ -9,7 +9,7 @@
 18,19,0,25,0,0,0,0,0,0,0,0,0,0,0,0,0,0,17,18,
 18,19,0,41,0,0,0,0,0,0,0,0,0,0,1,2,3,0,17,18,
 18,19,0,57,0,0,0,0,0,0,0,0,0,0,33,34,35,0,17,18,
-18,19,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,17,18,
+18,19,0,0,0,0,0,0,0,0,8,0,0,0,0,0,0,0,17,18,
 18,19,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,17,18,
 18,19,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,17,18,
 18,19,0,0,0,0,0,0,0,0,1,3,0,0,0,0,0,0,17,18,
@@ -26,19 +26,19 @@
 </data>
  </layer>
  <objectgroup id="2" name="Object Layer 1">
-  <object id="4" name="Controllable" gid="256" x="144" y="80" width="16" height="16">
+  <object id="4" name="Controllable" gid="256" x="112" y="112" width="16" height="16">
    <properties>
     <property name="sprite" value="player"/>
     <property name="type" value="controllable"/>
    </properties>
   </object>
-  <object id="6" name="Attachable" gid="255" x="80" y="96" width="16" height="16">
+  <object id="6" name="Attachable" gid="255" x="144" y="96" width="16" height="16">
    <properties>
     <property name="sprite" value="attachable"/>
     <property name="type" value="attachable"/>
    </properties>
   </object>
-  <object id="7" name="Attachable" gid="255" x="112" y="128" width="16" height="16">
+  <object id="7" name="Attachable" gid="255" x="144" y="128" width="16" height="16">
    <properties>
     <property name="sprite" value="attachable"/>
     <property name="type" value="attachable"/>

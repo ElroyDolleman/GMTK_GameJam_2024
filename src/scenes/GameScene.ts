@@ -5,6 +5,7 @@ import { ActionManager } from "../input/ActionManager";
 
 const LEVELS = [
 	"playground-level",
+	"wholesome",
 	"three-pushes-with-twist",
 ];
 

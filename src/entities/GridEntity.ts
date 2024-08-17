@@ -168,14 +168,36 @@ export class GridEntity implements ISceneObject, IComponentManager<IGridEntityCo
 
 	public changeType(type: EntityTypes): void
 	{
-		switch(type)
+		this._type = type;
+	}
+
+	public kill(): void
+	{
+		this.sprite?.setVisible(false);
+		this.changeType(EntityTypes.None);
+	}
+
+	public fall(): void
+	{
+		this.changeType(EntityTypes.None);
+
+		if (!this.sprite)
 		{
-			case EntityTypes.None:
-				this.sprite?.setVisible(false);
-				break;
+			return;
 		}
 
-		this._type = type;
+		this.sprite.x += this.sprite.width / 2;
+		this.sprite.y += this.sprite.height / 2;
+		this.sprite.setOrigin(0.5, 0.5);
+
+		const tween = this.scene.tweens.add({
+			targets: this.sprite,
+			duration: 500,
+			props: {
+				scale: 0,
+			},
+			onComplete: () => this.sprite?.setVisible(false)
+		});
 	}
 
 	protected _onPositionUpdated(): void

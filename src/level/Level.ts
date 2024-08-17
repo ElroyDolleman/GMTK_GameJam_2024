@@ -93,10 +93,9 @@ export class Level
 
             if (tile.damaging && (entity.type === EntityTypes.Attachable || entity.type === EntityTypes.Controllable))
             {
-                entity.changeType(EntityTypes.None);
+                entity.kill();
             }
-
-            if (tile.solid)
+            else if (tile.solid)
             {
                 return false;
             }
@@ -172,6 +171,13 @@ export class Level
         return this._grids[layer] !== undefined;
     }
 
+    public getCellUnderEntity(entity: GridEntity): Tile
+    {
+        const location = entity.gridLocation;
+        const grid = this.getGrid(entity.depth);
+        return grid.getCell(location.x, location.y);
+    }
+
     private _createGrid(layerData: TileLayerData): Grid<Tile>
     {
         const cells: Tile[] = [];
@@ -221,7 +227,6 @@ export class Level
     private _handleMoved(): void
     {
         const controllables = this._entities.filter(e => e.type === EntityTypes.Controllable);
-
         controllables.forEach(entity =>
         {
             const location = entity.gridLocation;
@@ -235,14 +240,35 @@ export class Level
             });
         });
 
-        this.onEntitiesMoved.trigger();
+        let aboveHole = controllables.length > 0;
+        for (let i = 0; i < controllables.length; i++)
+        {
+            const cell = this.getCellUnderEntity(controllables[i]);
+            if (!cell.hole)
+            {
+                aboveHole = false; break;
+            }
+
+        }
+        if (aboveHole)
+        {
+            controllables.forEach(entity => entity.fall());
+        }
+
+        const fallables = this._entities.filter(e => e.type === EntityTypes.Pushable || e.type === EntityTypes.Attachable);
+        fallables.forEach(entity =>
+        {
+            const cell = this.getCellUnderEntity(entity);
+            if (cell.hole)
+            {
+                entity.fall();
+            }
+        });
 
         let gotCake = false;
         controllables.forEach(entity =>
         {
-            const location = entity.gridLocation;
-            const grid = this.getGrid(entity.depth);
-            const cell = grid.getCell(location.x, location.y);
+            const cell = this.getCellUnderEntity(entity);
 
             const cakes = cell.entities.filter(e => e.type === EntityTypes.Victory);
             if (cakes.length > 0)
@@ -251,6 +277,7 @@ export class Level
             }
         });
 
+        this.onEntitiesMoved.trigger();
         if (gotCake)
         {
             this.onLevelWon.trigger();
