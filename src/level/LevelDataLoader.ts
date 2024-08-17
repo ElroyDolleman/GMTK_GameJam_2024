@@ -155,7 +155,17 @@ export class LevelDataLoader
 
             const position = { x: objects[i]?.["x"] ?? 0, y: objects[i]?.["y"] ?? 0 };
 
-            result.push({ name, type, position });
+            const properties = objects[i]?.["properties"] ?? [];
+            let spriteName: string = "";
+            properties.forEach((prop: any) =>
+            {
+                if (prop["name"] === "sprite")
+                {
+                    spriteName = prop["value"] ?? "";
+                }
+            });
+
+            result.push({ name, type, position, spriteName });
         }
 
         return result;

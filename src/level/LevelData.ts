@@ -22,6 +22,7 @@ export type ObjectData =
     name: string;
     type: EntityTypes;
     position: IPoint;
+    spriteName: string;
 }
 
 export type ObjectLayerData =

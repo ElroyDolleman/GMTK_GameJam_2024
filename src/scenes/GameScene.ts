@@ -1,9 +1,7 @@
 import { Scene } from "phaser";
 import { LevelDataLoader } from "../level/LevelDataLoader";
 import { Level } from "../level/Level";
-import { Player } from "../player/Player";
 import { ActionManager } from "../input/ActionManager";
-import { PlayerExtender } from "../player/PlayerExtender";
 
 export class GameScene extends Scene
 {
@@ -31,7 +29,7 @@ export class GameScene extends Scene
 		console.log("preload");
 
 		this.load.atlas("main", "assets/textures/main.png", "assets/textures/main.json");
-		LevelDataLoader.preloadFilesForLevel(this.load, "playground-level");
+		LevelDataLoader.preloadFilesForLevel(this.load, "three-pushes-with-twist");
 	}
 
 	public create(): void
@@ -44,7 +42,7 @@ export class GameScene extends Scene
 			return;
 		}
 
-		const levelData = LevelDataLoader.getLevelData(this.cache, "playground-level");
+		const levelData = LevelDataLoader.getLevelData(this.cache, "three-pushes-with-twist");
 		const level = new Level(this, levelData);
 
 		this.actionManager = new ActionManager({

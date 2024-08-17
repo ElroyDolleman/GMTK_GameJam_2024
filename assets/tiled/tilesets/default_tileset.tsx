@@ -26,6 +26,16 @@
    <property name="type" value="solid"/>
   </properties>
  </tile>
+ <tile id="6">
+  <properties>
+   <property name="type" value="solid"/>
+  </properties>
+ </tile>
+ <tile id="7">
+  <properties>
+   <property name="type" value="spike"/>
+  </properties>
+ </tile>
  <tile id="16">
   <properties>
    <property name="type" value="solid"/>
@@ -51,6 +61,26 @@
    <property name="type" value="solid"/>
   </properties>
  </tile>
+ <tile id="21">
+  <properties>
+   <property name="type" value="hole"/>
+  </properties>
+ </tile>
+ <tile id="22">
+  <properties>
+   <property name="type" value="hole"/>
+  </properties>
+ </tile>
+ <tile id="23">
+  <properties>
+   <property name="type" value="hole"/>
+  </properties>
+ </tile>
+ <tile id="24">
+  <properties>
+   <property name="type" value="hole"/>
+  </properties>
+ </tile>
  <tile id="32">
   <properties>
    <property name="type" value="solid"/>
@@ -69,6 +99,66 @@
  <tile id="36">
   <properties>
    <property name="type" value="solid"/>
+  </properties>
+ </tile>
+ <tile id="37">
+  <properties>
+   <property name="type" value="hole"/>
+  </properties>
+ </tile>
+ <tile id="38">
+  <properties>
+   <property name="type" value="hole"/>
+  </properties>
+ </tile>
+ <tile id="39">
+  <properties>
+   <property name="type" value="hole"/>
+  </properties>
+ </tile>
+ <tile id="40">
+  <properties>
+   <property name="type" value="hole"/>
+  </properties>
+ </tile>
+ <tile id="53">
+  <properties>
+   <property name="type" value="hole"/>
+  </properties>
+ </tile>
+ <tile id="54">
+  <properties>
+   <property name="type" value="hole"/>
+  </properties>
+ </tile>
+ <tile id="55">
+  <properties>
+   <property name="type" value="hole"/>
+  </properties>
+ </tile>
+ <tile id="56">
+  <properties>
+   <property name="type" value="hole"/>
+  </properties>
+ </tile>
+ <tile id="69">
+  <properties>
+   <property name="type" value="hole"/>
+  </properties>
+ </tile>
+ <tile id="70">
+  <properties>
+   <property name="type" value="hole"/>
+  </properties>
+ </tile>
+ <tile id="71">
+  <properties>
+   <property name="type" value="hole"/>
+  </properties>
+ </tile>
+ <tile id="72">
+  <properties>
+   <property name="type" value="hole"/>
   </properties>
  </tile>
 </tileset>

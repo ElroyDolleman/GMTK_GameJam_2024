@@ -99,6 +99,7 @@ export class Level
                 {
                     case EntityTypes.Blockable:
                         return false;
+                    case EntityTypes.Attachable:
                     case EntityTypes.Pushable:
                         const moreEntities = [entity];
                         if (!this.canEntitiesMove(moreEntities, step))
@@ -191,7 +192,7 @@ export class Level
         layerData.objects.forEach(data =>
         {
             const location = grid.toGridLocation(data.position.x, data.position.y);
-            const sprite = this.scene.add.sprite(0, 0, "main", "player");
+            const sprite = this.scene.add.sprite(0, 0, "main", data.spriteName);
 
             // HACK: Everything is off by one for some reason
             location.y--;
