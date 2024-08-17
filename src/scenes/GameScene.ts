@@ -36,21 +36,36 @@ export class GameScene extends Scene
 		const levelData = LevelDataLoader.getLevelData(this.cache, "playground-level");
 		const level = new Level(this, levelData);
 
-		const player = new Player({
+		const player1 = new Player({
 			scene: this,
 			grid: level.getGrid(0),
-			location: { x: 9, y: 9 }
+			location: { x: 7, y: 7 }
 		});
-		level.addEntity(player);
+		level.addEntity(player1);
+		const player2 = new Player({
+			scene: this,
+			grid: level.getGrid(0),
+			location: { x: 8, y: 8 }
+		});
+		level.addEntity(player2);
 
-		this._moveTest(player);
+		this._moveTest(level);
 	}
 
-	private async _moveTest(player: Player): Promise<void>
+	private async _moveTest(level: Level): Promise<void>
 	{
-		await player.move({ x: 1, y: 0 });
-		await player.move({ x: 1, y: 0 });
-		await player.move({ x: 0, y: 1 });
-		await player.move({ x: 0, y: 2 });
+		await level.inputMove({ x: 1, y: 0 }, 500);
+		await level.inputMove({ x: 1, y: 0 }, 500);
+		await level.inputMove({ x: 0, y: 1 }, 500);
+		await level.inputMove({ x: 0, y: 1 }, 500);
+		await level.inputMove({ x: 0, y: 1 }, 500);
+		await level.inputMove({ x: 0, y: 1 }, 500);
+		await level.inputMove({ x: 0, y: 1 }, 500);
+		await level.inputMove({ x: 0, y: 1 }, 500);
+		await level.inputMove({ x: 0, y: 1 }, 500);
+		await level.inputMove({ x: 0, y: 1 }, 500);
+		await level.inputMove({ x: -1, y: 0 }, 500);
+		await level.inputMove({ x: 0, y: 1 }, 500);
+		await level.inputMove({ x: 0, y: 1 }, 500);
 	}
 }

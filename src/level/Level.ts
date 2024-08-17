@@ -5,6 +5,15 @@ import { LayerData, LevelData, TileLayerData } from "./LevelData";
 import { TileType } from "./TilesetData";
 import { EmptyTile } from "../grid/tiles/EmptyTile";
 import { GridEntity } from "../entities/GridEntity";
+import { IGridEntityComponent } from "../entities/components/IGridEntityComponent";
+import { Constructor } from "../utils/ConstructorGeneric";
+import { SolidTile } from "../grid/tiles/SolidTile";
+
+export type GridStep =
+{
+    x: -1 | 0 | 1;
+    y: -1 | 0 | 1;
+}
 
 export class Level
 {
@@ -34,7 +43,60 @@ export class Level
         });
     }
 
-    public addEntity(entity: GridEntity, layer: number = 0): void
+    public async inputMove(step: GridStep, duration: number): Promise<void>
+    {
+        const entities = this._entities.filter(e => e.reactsOnInput);
+
+        if (!this.canEntitiesMove(entities, step))
+        {
+            return;
+        }
+
+        const promises: Promise<void>[] = [];
+        for (let i = 0; i < entities.length; i++)
+        {
+            promises.push(this.moveEntity(entities[i], step, duration));
+        }
+        await Promise.all(promises);
+    }
+
+    public canEntitiesMove(entities: GridEntity[], step: GridStep): boolean
+    {
+        for (let i = 0; i < entities.length; i++)
+        {
+            const entity = entities[i];
+            const location = entity.gridLocation;
+
+            if (!this.hasGridOnLayer(entity.depth))
+            {
+                continue;
+            }
+            const grid = this.getGrid(entity.depth);
+            const tile = grid.getCell(location.x + step.x, location.y + step.y);
+            if (tile.solid)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public async moveEntity(entity: GridEntity, step: GridStep, duration: number): Promise<void>
+    {
+        await entity.move(step.x, step.y, duration);
+    }
+
+    public getEntityComponents(type: Constructor<IGridEntityComponent>): IGridEntityComponent[]
+    {
+        const components: IGridEntityComponent[] = [];
+        for (let i = 0; i < this._entities.length; i++)
+        {
+            components.push(...this._entities[i].getComponents(type));
+        }
+        return components;
+    }
+
+    public addEntity(entity: GridEntity): void
     {
         this._entities.push(entity);
     }
@@ -49,6 +111,11 @@ export class Level
         return grid;
     }
 
+    public hasGridOnLayer(layer: number): boolean
+    {
+        return this._grids[layer] !== undefined;
+    }
+
     private _createGrid(layerData: TileLayerData): Grid<Tile>
     {
         const cells: Tile[] = [];
@@ -56,7 +123,7 @@ export class Level
 
         for (let i = 0; i < layerData.tiles.length; i++)
         {
-            const tileId = layerData.tiles[i] ?? 0;
+            const tileId = (layerData.tiles[i] ?? 0) - 1;
             const tileType = this._levelData.tileset.tiles[tileId]?.type ?? "empty";
 
             const tile = this._createTile(tileType, tileId, i, layer);
@@ -82,13 +149,13 @@ export class Level
         };
 
         let sprite: GameObjects.Sprite | undefined;
-        if (tileId > 0)
+        if (tileId >= 0)
         {
             sprite = this.scene.add.sprite(
                 position.x,
                 position.y,
                 this._levelData.tileset.image,
-                tileId - 1
+                tileId
             );
             sprite.setOrigin(0, 0);
             sprite.depth = layer;
@@ -98,8 +165,14 @@ export class Level
         {
             default:
             case "empty":
+                console.log("empty", tileId);
                 return new EmptyTile({
-                    location: { row: position.x, column: position.y },
+                    location: { row: gridX, column: gridY },
+                    sprite
+                });
+            case "solid":
+                return new SolidTile({
+                    location: { row: gridX, column: gridY },
                     sprite
                 });
         }

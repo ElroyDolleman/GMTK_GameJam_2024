@@ -18,7 +18,8 @@ export class Player extends GridEntity
             location: options.location,
             scene: options.scene,
             grid: options.grid,
-            debug: true
+            debug: true,
+            reactsOnInput: true
         });
     }
 

@@ -4,9 +4,9 @@ import { IRectangle } from "../geometry/IRectangle";
 import { TimeUtils } from "../utils/TimeUtils";
 import { Grid } from "../grid/Grid";
 import { ISceneObject } from "./ISceneObject";
-
-// @TODO: Somewhere else
-const MOVE_DURATION = 500;
+import { IGridEntityComponent } from "./components/IGridEntityComponent";
+import { IComponentManager } from "../utils/IComponentManager";
+import { Constructor } from "../utils/ConstructorGeneric";
 
 export type GridEntityOptions = {
 	hitbox: IRectangle;
@@ -16,9 +16,11 @@ export type GridEntityOptions = {
 	debug?: boolean;
 	depth?: number;
 	sprite?: GameObjects.Sprite;
+
+	reactsOnInput?: boolean;
 };
 
-export class GridEntity implements ISceneObject
+export class GridEntity implements ISceneObject, IComponentManager<IGridEntityComponent>
 {
 	public speed: Phaser.Math.Vector2;
 
@@ -65,14 +67,19 @@ export class GridEntity implements ISceneObject
 
 	public readonly depth: number;
 
+	public reactsOnInput: boolean;
+
 	protected _debugGraphics?: GameObjects.Graphics;
 
 	private _position: IPoint;
+
+	private _components: IGridEntityComponent[] = [];
 
 	public constructor(options: GridEntityOptions)
 	{
 		this.scene = options.scene;
 		this.grid = options.grid;
+		this.reactsOnInput = options.reactsOnInput ?? false;
 
 		this._position = this.grid.toWorldPosition(options.location.x, options.location.y);
 		this._localHitbox = options.hitbox;
@@ -88,16 +95,45 @@ export class GridEntity implements ISceneObject
 		}
 	}
 
-	public move(amount: IPoint): Promise<void>
+	public addComponent(component: IGridEntityComponent): void
+	{
+		component.attachToParent(this);
+	}
+
+	public getComponent<K extends IGridEntityComponent>(type: Constructor<K>): K | undefined
+	{
+		return this._components.find(component => component instanceof type) as K;
+	}
+
+	public getComponents<K extends IGridEntityComponent>(type: Constructor<K>): K[]
+	{
+		return this._components.filter(component => component instanceof type) as K[];
+	}
+
+	public removeComponents<K extends IGridEntityComponent>(type: Constructor<K>): void
+	{
+		const index = this._components.findIndex(component => component instanceof type);
+		if (index !== -1)
+		{
+			this._components.splice(index, 1);
+		}
+	}
+
+	public move(amountX: -1 | 0 | 1, amountY: -1 | 0 | 1, duration: number): Promise<void>
 	{
 		const location = this.gridLocation;
-		const destination = this.grid.toWorldPosition(location.x + amount.x, location.y + amount.y);
+		const destination = this.grid.toWorldPosition(location.x + amountX, location.y + amountY);
+
+		if (amountX !== 0 && amountY !== 0)
+		{
+			throw "Can't move diagonally >:c";
+		}
 
 		return new Promise<void>(resolve =>
 		{
 			const tween = this.scene.tweens.add({
 				targets: this._position,
-				duration: MOVE_DURATION,
+				duration,
 				props: {
 					x: { value: destination.x },
 					y: { value: destination.y }
