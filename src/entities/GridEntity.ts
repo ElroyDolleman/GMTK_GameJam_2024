@@ -15,6 +15,7 @@ export enum EntityTypes
 	Blockable,
 	Pushable,
 	Attachable,
+	Victory
 }
 
 export type GridEntityOptions = {
@@ -167,6 +168,13 @@ export class GridEntity implements ISceneObject, IComponentManager<IGridEntityCo
 
 	public changeType(type: EntityTypes): void
 	{
+		switch(type)
+		{
+			case EntityTypes.None:
+				this.sprite?.setVisible(false);
+				break;
+		}
+
 		this._type = type;
 	}
 

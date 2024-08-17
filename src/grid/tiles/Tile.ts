@@ -19,6 +19,8 @@ export type TileOptions =
 export abstract class Tile
 {
     public readonly solid: boolean = false;
+    public readonly damaging: boolean = false;
+    public readonly hole: boolean = false;
 
     public readonly hitbox?: Geom.Rectangle;
     public readonly sprite?: GameObjects.Sprite;

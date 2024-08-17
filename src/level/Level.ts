@@ -9,6 +9,8 @@ import { IGridEntityComponent } from "../entities/components/IGridEntityComponen
 import { Constructor } from "../utils/ConstructorGeneric";
 import { SolidTile } from "../grid/tiles/SolidTile";
 import { GameEvent } from "../utils/GameEvent";
+import { SpikeTile } from "../grid/tiles/SpikeTile";
+import { PitTile } from "../grid/tiles/PitTile";
 
 export type GridStep =
 {
@@ -19,6 +21,7 @@ export type GridStep =
 export class Level
 {
     public readonly onEntitiesMoved: GameEvent<void> = new GameEvent();
+    public readonly onLevelWon: GameEvent<void> = new GameEvent();
 
     public get cellWidth(): number { return this._levelData.tileWidth; }
     public get cellHeight(): number { return this._levelData.tileHeight; }
@@ -87,6 +90,12 @@ export class Level
             }
             const grid = this.getGrid(entity.depth);
             const tile = grid.getCell(location.x + step.x, location.y + step.y);
+
+            if (tile.damaging && (entity.type === EntityTypes.Attachable || entity.type === EntityTypes.Controllable))
+            {
+                entity.changeType(EntityTypes.None);
+            }
+
             if (tile.solid)
             {
                 return false;
@@ -212,7 +221,6 @@ export class Level
     private _handleMoved(): void
     {
         const controllables = this._entities.filter(e => e.type === EntityTypes.Controllable);
-        // const attachables = this._entities.filter(e => e.type === EntityTypes.Attachable);
 
         controllables.forEach(entity =>
         {
@@ -228,6 +236,25 @@ export class Level
         });
 
         this.onEntitiesMoved.trigger();
+
+        let gotCake = false;
+        controllables.forEach(entity =>
+        {
+            const location = entity.gridLocation;
+            const grid = this.getGrid(entity.depth);
+            const cell = grid.getCell(location.x, location.y);
+
+            const cakes = cell.entities.filter(e => e.type === EntityTypes.Victory);
+            if (cakes.length > 0)
+            {
+                gotCake = true;
+            }
+        });
+
+        if (gotCake)
+        {
+            this.onLevelWon.trigger();
+        }
     }
 
     private _createTile(tileType: TileType, tileId: number, tileIndex: number, layer: number): Tile
@@ -265,11 +292,22 @@ export class Level
                     location: { row: gridX, column: gridY },
                     sprite
                 });
+            case "spike":
+                return new SpikeTile({
+                    location: { row: gridX, column: gridY },
+                    sprite
+                });
+            case "pit":
+                return new PitTile({
+                    location: { row: gridX, column: gridY },
+                    sprite
+                });
         }
     }
 
     public destroy(): void
     {
         this.onEntitiesMoved.removeAllListeners();
+        this.onLevelWon.removeAllListeners();
     }
 }

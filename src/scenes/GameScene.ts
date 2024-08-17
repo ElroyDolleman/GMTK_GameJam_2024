@@ -3,11 +3,25 @@ import { LevelDataLoader } from "../level/LevelDataLoader";
 import { Level } from "../level/Level";
 import { ActionManager } from "../input/ActionManager";
 
+const LEVELS = [
+	"playground-level",
+	"three-pushes-with-twist",
+];
+
+export type GameSceneOptions = {
+	levelNumber: number;
+}
+
 export class GameScene extends Scene
 {
 	public static key = "GameScene";
 
 	public actionManager!: ActionManager;
+
+	private _levelNumber: number = 0;
+	private get _levelName(): string { return LEVELS[this._levelNumber % LEVELS.length]; }
+
+	private _level!: Level;
 
 	public constructor()
 	{
@@ -21,7 +35,7 @@ export class GameScene extends Scene
 
 	public init(): void
 	{
-		console.log("init");
+		console.log("init", this._levelNumber);
 	}
 
 	public preload(): void
@@ -29,7 +43,7 @@ export class GameScene extends Scene
 		console.log("preload");
 
 		this.load.atlas("main", "assets/textures/main.png", "assets/textures/main.json");
-		LevelDataLoader.preloadFilesForLevel(this.load, "three-pushes-with-twist");
+		LevelDataLoader.preloadFilesForLevel(this.load, this._levelName);
 	}
 
 	public create(): void
@@ -42,17 +56,26 @@ export class GameScene extends Scene
 			return;
 		}
 
-		const levelData = LevelDataLoader.getLevelData(this.cache, "three-pushes-with-twist");
-		const level = new Level(this, levelData);
+		const levelData = LevelDataLoader.getLevelData(this.cache, this._levelName);
+		this._level = new Level(this, levelData);
 
 		this.actionManager = new ActionManager({
 			keyboard: this.input.keyboard,
-			level
+			level: this._level
 		});
+
+		this._level.onLevelWon.addListener(this._handleVictory, this);
 	}
 
 	public update(time: number, delta: number): void
 	{
 		this.actionManager.update();
+	}
+
+	private _handleVictory(): void
+	{
+		this._level.destroy();
+		this._levelNumber++;
+		this.scene.restart();
 	}
 }
