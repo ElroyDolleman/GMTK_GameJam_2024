@@ -9,7 +9,7 @@ export type PlayerOptions = {
     grid: Grid<unknown>;
 };
 
-export class Player extends GridEntity
+export class PlayerExtender extends GridEntity
 {
     public constructor(options: PlayerOptions)
     {
@@ -19,8 +19,8 @@ export class Player extends GridEntity
             scene: options.scene,
             grid: options.grid,
             debug: true,
-            reactsOnInput: true,
-            type: EntityTypes.None
+            reactsOnInput: false,
+            type: EntityTypes.Pushable
         });
     }
 

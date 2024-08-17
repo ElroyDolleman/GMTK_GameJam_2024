@@ -4,7 +4,7 @@ import { Tile } from "../grid/tiles/Tile";
 import { LayerData, LevelData, TileLayerData } from "./LevelData";
 import { TileType } from "./TilesetData";
 import { EmptyTile } from "../grid/tiles/EmptyTile";
-import { GridEntity } from "../entities/GridEntity";
+import { EntityTypes, GridEntity } from "../entities/GridEntity";
 import { IGridEntityComponent } from "../entities/components/IGridEntityComponent";
 import { Constructor } from "../utils/ConstructorGeneric";
 import { SolidTile } from "../grid/tiles/SolidTile";
@@ -62,6 +62,7 @@ export class Level
 
     public canEntitiesMove(entities: GridEntity[], step: GridStep): boolean
     {
+        const extraEntities: GridEntity[] = [];
         for (let i = 0; i < entities.length; i++)
         {
             const entity = entities[i];
@@ -77,13 +78,41 @@ export class Level
             {
                 return false;
             }
+
+            for (let j = 0; j < tile.entities.length; j++)
+            {
+                const entity = tile.entities[i];
+                switch (entity.type)
+                {
+                    case EntityTypes.Blockable:
+                        return false;
+                    case EntityTypes.Pushable:
+                        const moreEntities = [entity];
+                        if (!this.canEntitiesMove(moreEntities, step))
+                        {
+                            return false;
+                        }
+                        extraEntities.push(...moreEntities);
+                        break;
+                }
+            }
         }
+        entities.push(...extraEntities);
         return true;
     }
 
     public async moveEntity(entity: GridEntity, step: GridStep, duration: number): Promise<void>
     {
+        const grid = this.getGrid(entity.depth);
+        const location = entity.gridLocation;
+
+        const current = grid.getCell(location.x, location.y);
+        const next = grid.getCell(location.x + step.x, location.y + step.y);
+
         await entity.move(step.x, step.y, duration);
+
+        current.removeEntity(entity);
+        next.addEntity(entity);
     }
 
     public getEntityComponents(type: Constructor<IGridEntityComponent>): IGridEntityComponent[]
@@ -99,6 +128,10 @@ export class Level
     public addEntity(entity: GridEntity): void
     {
         this._entities.push(entity);
+        const grid = this.getGrid(entity.depth);
+        const location = entity.gridLocation;
+        const cell = grid.getCell(location.x, location.y);
+        cell.addEntity(entity);
     }
 
     public getGrid(layer: number): Grid<Tile>

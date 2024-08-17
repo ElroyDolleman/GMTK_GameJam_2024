@@ -8,6 +8,14 @@ import { IGridEntityComponent } from "./components/IGridEntityComponent";
 import { IComponentManager } from "../utils/IComponentManager";
 import { Constructor } from "../utils/ConstructorGeneric";
 
+export enum EntityTypes
+{
+	None,
+	Blockable,
+	Pushable,
+	Attachable,
+}
+
 export type GridEntityOptions = {
 	hitbox: IRectangle;
 	location: IPoint;
@@ -18,6 +26,7 @@ export type GridEntityOptions = {
 	sprite?: GameObjects.Sprite;
 
 	reactsOnInput?: boolean;
+	type: EntityTypes;
 };
 
 export class GridEntity implements ISceneObject, IComponentManager<IGridEntityComponent>
@@ -68,6 +77,7 @@ export class GridEntity implements ISceneObject, IComponentManager<IGridEntityCo
 	public readonly depth: number;
 
 	public reactsOnInput: boolean;
+	public type: EntityTypes;
 
 	protected _debugGraphics?: GameObjects.Graphics;
 
@@ -80,6 +90,7 @@ export class GridEntity implements ISceneObject, IComponentManager<IGridEntityCo
 		this.scene = options.scene;
 		this.grid = options.grid;
 		this.reactsOnInput = options.reactsOnInput ?? false;
+		this.type = options.type;
 
 		this._position = this.grid.toWorldPosition(options.location.x, options.location.y);
 		this._localHitbox = options.hitbox;

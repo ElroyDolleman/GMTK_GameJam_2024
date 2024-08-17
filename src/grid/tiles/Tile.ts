@@ -1,6 +1,7 @@
 import { GameObjects, Geom } from "phaser";
 import { IRectangle } from "../../geometry/IRectangle";
 import { IPoint } from "../../geometry/IPoint";
+import { GridEntity } from "../../entities/GridEntity";
 
 export type TileLocation =
 {
@@ -24,6 +25,8 @@ export abstract class Tile
 
     public readonly location: TileLocation;
 
+    public readonly entities: GridEntity[] = [];
+
     public constructor(options: TileOptions)
     {
         if (options.hitbox)
@@ -38,5 +41,19 @@ export abstract class Tile
 
         this.sprite = options.sprite;
         this.location = options.location;
+    }
+
+    public removeEntity(entity: GridEntity): void
+    {
+        const index = this.entities.indexOf(entity);
+		if (index !== -1)
+		{
+			this.entities.splice(index, 1);
+		}
+    }
+
+    public addEntity(entity: GridEntity): void
+    {
+        this.entities.push(entity);
     }
 }

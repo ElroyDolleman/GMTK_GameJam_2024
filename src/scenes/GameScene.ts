@@ -3,6 +3,7 @@ import { LevelDataLoader } from "../level/LevelDataLoader";
 import { Level } from "../level/Level";
 import { Player } from "../player/Player";
 import { ActionManager } from "../input/ActionManager";
+import { PlayerExtender } from "../player/PlayerExtender";
 
 export class GameScene extends Scene
 {
@@ -56,28 +57,22 @@ export class GameScene extends Scene
 			location: { x: 4, y: 7 }
 		});
 		level.addEntity(player1);
-		const player2 = new Player({
+		const player2 = new PlayerExtender({
 			scene: this,
 			grid: level.getGrid(0),
 			location: { x: 7, y: 9 }
 		});
 		level.addEntity(player2);
-		const player3 = new Player({
+		const player3 = new PlayerExtender({
 			scene: this,
 			grid: level.getGrid(0),
 			location: { x: 7, y: 6 }
 		});
 		level.addEntity(player3);
-
-		this._moveTest(level);
 	}
 
 	public update(time: number, delta: number): void
 	{
 		this.actionManager.update();
-	}
-
-	private async _moveTest(level: Level): Promise<void>
-	{
 	}
 }
