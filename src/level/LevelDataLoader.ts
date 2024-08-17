@@ -1,5 +1,5 @@
-import { Loader, Cache } from "phaser";
-import { LayerData, LayerType, LevelData } from "./LevelData";
+import { Loader, Cache, Types } from "phaser";
+import { LayerData, LayerType, LevelData, ObjectLayerData, TileLayerData } from "./LevelData";
 import { TileData, TilesetData, TileType } from "./TilesetData";
 
 export type LevelLoaderOptions =
@@ -11,28 +11,50 @@ export type LevelLoaderOptions =
 
 export class LevelDataLoader
 {
-    private _load: Loader.LoaderPlugin;
-    private _cache: Cache.CacheManager;
-    private _levelName: string;
-
-    public constructor(options: LevelLoaderOptions)
+    public static getLevelJsonPath(levelName: string): string
     {
-        this._load = options.load;
-        this._cache = options.cache;
-        this._levelName = options.levelName;
-
-        this._load.json(this._levelName, "assets/levels/" + this._levelName + ".json");
-
-        // TODO: Add support for different tilesets
-        this._load.json("default_tileset", "assets/tilesets/default_tileset.json");
+        return `assets/levels/${levelName}.json`;
     }
 
-    public getLevelData(): LevelData
+    public static getTilesetJsonPath(tilesetName: string): string
     {
-        const jsonData = this._cache.json.get(this._levelName);
+        return `assets/tilesets/${tilesetName}.json`;
+    }
+
+    public static preloadFilesForLevel(load: Loader.LoaderPlugin, levelName: string): void
+    {
+        load.json(levelName, this.getLevelJsonPath(levelName));
+        load.on(`filecomplete-json-${levelName}`, (_key: any, _type: any, levelData: any) =>
+        {
+            const tilesets = levelData["tilesetNames"] ?? [];
+            for (let i = 0; i < tilesets.length; i++)
+            {
+                load.json(tilesets[i], `assets/tilesets/${tilesets[i]}.json`);
+                load.on(`filecomplete-json-${tilesets[i]}`, (_key: any, _type: any, tilesetData: any) =>
+                {
+                    const image: string | undefined = tilesetData["image"];
+                    if (image)
+                    {
+                        load.spritesheet(
+                            image.replace(".png", ""),
+                            `assets/tilesets/${image}`,
+                            {
+                                frameWidth: tilesetData["tilewidth"] ?? 1,
+                                frameHeight: tilesetData["tileheight"] ?? 1
+                            }
+                        );
+                    }
+                });
+            }
+        });
+    }
+
+    public static getLevelData(cache: Cache.CacheManager, levelName: string): LevelData
+    {
+        const jsonData = cache.json.get(levelName);
         if (jsonData === undefined)
         {
-            throw `Failed to find level ${this._levelName}`;
+            throw `Failed to find level ${levelName} in cache`;
         }
 
         const tileWidth = jsonData["tilewidth"] ?? 0;
@@ -42,6 +64,7 @@ export class LevelDataLoader
 
         const layersDataList = jsonData["layers"] ?? [];
         const layers: LayerData[] = [];
+        const tilesetName = jsonData["tilesetNames"]?.[0] ?? "";
 
         for (let i = 0; i < layersDataList.length; i++)
         {
@@ -54,13 +77,13 @@ export class LevelDataLoader
             tileHeight,
             rows,
             columns,
-            tileset: this.getTilesetData(),
+            tileset: this.getTilesetData(cache, tilesetName),
         };
     }
 
-    public getTilesetData(name: string = "default_tileset"): TilesetData
+    public static getTilesetData(cache: Cache.CacheManager, name: string = "default_tileset"): TilesetData
     {
-        const jsonData = this._cache.json.get(name);
+        const jsonData = cache.json.get(name);
         if (jsonData === undefined)
         {
             throw `Failed to find tileset ${name}`;
@@ -86,23 +109,30 @@ export class LevelDataLoader
         };
     }
 
-    private _getPropertyValue<T>(name: string, properties: any[]): T | undefined
+    private static _getPropertyValue<T>(name: string, properties: any[]): T | undefined
     {
         const data = properties.find((element: any) => element["name"] === name);
         return data["value"] ?? undefined;
     }
 
-    private _getLayerData(layer: any): LayerData
+    private static _getLayerData(layer: any): LayerData
     {
         switch (layer?.["type"])
         {
             case "tilelayer":
+                return {
+                    type: layer["type"] as LayerType,
+                    name: layer["name"] ?? "",
+                    id: layer["id"] ?? -1,
+                    tiles: layer["data"] ?? [],
+                } as TileLayerData;
             case "objectgroup":
                 return {
                     type: layer["type"] as LayerType,
                     name: layer["name"] ?? "",
                     id: layer["id"] ?? -1,
-                };
+                    objects: [],
+                } as ObjectLayerData;
         }
         throw `Unsupported layer type ${layer?.["type"]}`;
     }

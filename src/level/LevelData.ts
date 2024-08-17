@@ -12,14 +12,14 @@ export type LayerData =
 export type TileLayerData =
 {
     type: "tilelayer";
-    tiles: [];
+    tiles: number[];
 } & LayerData;
 
 export type ObjectLayerData =
 {
     type: "objectgroup";
     objects: any[];
-}
+} & LayerData;
 
 export type LevelData =
 {

@@ -67,6 +67,16 @@ export class Commands
 
 			console.log(`Export level: ${files[i]}`);
 			await this.exportTiledMap(path.join(sourceFolder, files[i]), outputFilePath);
+
+			const fileContents = await IO.readFile(outputFilePath);
+			const fileData = JSON.parse(fileContents);
+			fileData.tilesetNames = [];
+			fileData.tilesets.forEach(element =>
+			{
+				fileData.tilesetNames.push(element.source.split("/").slice(-1)[0].replace(".tsx", ""));
+			});
+			fileData.tilesets = undefined;
+			await IO.writeFile(outputFilePath, JSON.stringify(fileData));
 		}
 	}
 }

@@ -5,20 +5,30 @@ import { IPoint } from "../../geometry/IPoint";
 export type TileOptions =
 {
     position: IPoint;
-    hitbox: IRectangle;
+    hitbox?: IRectangle;
     sprite?: GameObjects.Sprite;
 }
 
 export abstract class Tile
 {
-    public readonly hitbox: Geom.Rectangle;
+    public readonly hitbox?: Geom.Rectangle;
     public readonly sprite?: GameObjects.Sprite;
+
+    public readonly position: IPoint;
 
     public constructor(options: TileOptions)
     {
-        this.hitbox = new Geom.Rectangle(options.hitbox.x, options.hitbox.y, options.hitbox.width, options.hitbox.height);
-        this.sprite = options.sprite;
+        if (options.hitbox)
+        {
+            this.hitbox = new Geom.Rectangle(
+                options.hitbox.x,
+                options.hitbox.y,
+                options.hitbox.width,
+                options.hitbox.height
+            );
+        }
 
-        this.sprite?.setPosition(options.position.x, options.position.y);
+        this.sprite = options.sprite;
+        this.position = options.position;
     }
 }

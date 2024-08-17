@@ -2,12 +2,13 @@ import { IPoint } from "../geometry/IPoint";
 import { IRectangle } from "../geometry/IRectangle";
 import { ICircle } from "../geometry/ICircle";
 
-export interface GridSettings
+export interface GridOptions<T>
 {
-	gridCellsX: number;
-	gridCellsY: number;
+	rows: number;
+	columns: number;
 	cellWidth: number;
 	cellHeight: number;
+	cells: T[];
 }
 
 export class Grid<T>
@@ -20,15 +21,15 @@ export class Grid<T>
 	public readonly cellWidth: number;
 	public readonly cellHeight: number;
 
-	public constructor(cells: T[], settings: GridSettings)
+	public constructor(options: GridOptions<T>)
 	{
-		this._cells = cells;
+		this._cells = options.cells;
 
-		this.rows = settings.gridCellsX;
-		this.columns = settings.gridCellsY;
+		this.rows = options.rows;
+		this.columns = options.columns;
 
-		this.cellWidth = settings.cellWidth;
-		this.cellHeight = settings.cellHeight;
+		this.cellWidth = options.cellWidth;
+		this.cellHeight = options.cellHeight;
 	}
 
 	public getCell(cellX: number, cellY: number): T

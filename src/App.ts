@@ -4,9 +4,9 @@ import { GameScene } from "./scenes/GameScene";
 export const game = new Game({
 	type: Phaser.AUTO,
 	width: 320,
-	height: 240,
+	height: 320,
 	pixelArt: true,
-	zoom: 3,
+	zoom: 2,
 	backgroundColor: "#FFFFFF",
 	title: "GMTK Game Jam 2024",
 	version: "0.0.1",

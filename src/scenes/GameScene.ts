@@ -1,15 +1,19 @@
 import { Scene } from "phaser";
-import { LevelDataLoader } from "../level/LevelLoader";
+import { LevelDataLoader } from "../level/LevelDataLoader";
+import { Level } from "../level/Level";
 
 export class GameScene extends Scene
 {
 	public static key = "GameScene";
 
-    private _levelLoader!: LevelDataLoader;
-
 	public constructor()
 	{
-		super({ key: GameScene.key });
+		super({
+			key: GameScene.key,
+			pack: {
+				files: []
+			}
+		});
 	}
 
 	public init(): void
@@ -21,17 +25,14 @@ export class GameScene extends Scene
 	{
 		console.log("preload");
 
-        this._levelLoader = new LevelDataLoader({
-            cache: this.cache,
-            load: this.load,
-            levelName: "playground-level",
-        });
+		LevelDataLoader.preloadFilesForLevel(this.load, "playground-level");
 	}
 
 	public create(): void
 	{
 		console.log("create");
 
-        const levelData = this._levelLoader.getLevelData();
+		const levelData = LevelDataLoader.getLevelData(this.cache, "playground-level");
+		const level = new Level(this, levelData);
 	}
 }
