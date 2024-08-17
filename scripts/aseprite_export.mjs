@@ -63,7 +63,7 @@ export class AsepriteExport
 
         const jsonOutput = resultFiles[0];
 	    let jsonString = jsonOutput.buffer.toString();
-	    jsonString = jsonString.replaceAll('./build_assets/', '');
+	    jsonString = jsonString.replaceAll(`build_assets/_images_${textureName}/`, "");
 
         const imageOutput = resultFiles[1];
 

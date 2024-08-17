@@ -97,6 +97,12 @@ export class GridEntity implements ISceneObject, IComponentManager<IGridEntityCo
 
 		this.speed = new Phaser.Math.Vector2();
 
+		if (options.sprite)
+		{
+			this.sprite = options.sprite;
+			this.sprite.setPosition(this._position.x, this._position.y);
+		}
+
 		if (options.debug)
 		{
 			this._debugGraphics = this.scene.add.graphics({ fillStyle: { color: 0x0000aa, alpha: 0.5 } });

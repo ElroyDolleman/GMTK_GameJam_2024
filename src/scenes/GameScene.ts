@@ -30,6 +30,7 @@ export class GameScene extends Scene
 	{
 		console.log("preload");
 
+		this.load.atlas("main", "assets/textures/main.png", "assets/textures/main.json");
 		LevelDataLoader.preloadFilesForLevel(this.load, "playground-level");
 	}
 

@@ -11,6 +11,8 @@ export type PlayerOptions = {
 
 export class Player extends GridEntity
 {
+    public override sprite!: Phaser.GameObjects.Sprite;
+
     public constructor(options: PlayerOptions)
     {
         super({
@@ -18,9 +20,10 @@ export class Player extends GridEntity
             location: options.location,
             scene: options.scene,
             grid: options.grid,
-            debug: true,
-            type: EntityTypes.Controllable
+            type: EntityTypes.Controllable,
+            sprite: options.scene.add.sprite(0, 0, "main", "player")
         });
+        this.sprite.setOrigin(0, 0);
     }
 
     public update(): void
