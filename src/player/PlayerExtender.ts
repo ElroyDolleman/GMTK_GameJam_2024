@@ -19,8 +19,7 @@ export class PlayerExtender extends GridEntity
             scene: options.scene,
             grid: options.grid,
             debug: true,
-            reactsOnInput: false,
-            type: EntityTypes.Pushable
+            type: EntityTypes.Attachable
         });
     }
 

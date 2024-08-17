@@ -11,6 +11,7 @@ import { Constructor } from "../utils/ConstructorGeneric";
 export enum EntityTypes
 {
 	None,
+	Controllable,
 	Blockable,
 	Pushable,
 	Attachable,
@@ -25,7 +26,6 @@ export type GridEntityOptions = {
 	depth?: number;
 	sprite?: GameObjects.Sprite;
 
-	reactsOnInput?: boolean;
 	type: EntityTypes;
 };
 
@@ -70,27 +70,26 @@ export class GridEntity implements ISceneObject, IComponentManager<IGridEntityCo
 	public get x(): number { return this.worldPosition.x; }
 	public get y(): number { return this.worldPosition.y; }
 
+	public get type(): EntityTypes { return this._type; }
+
 	public readonly scene: Scene;
 	public readonly grid: Grid<unknown>;
 	public readonly sprite?: GameObjects.Sprite;
 
 	public readonly depth: number;
 
-	public reactsOnInput: boolean;
-	public type: EntityTypes;
-
 	protected _debugGraphics?: GameObjects.Graphics;
 
 	private _position: IPoint;
-
 	private _components: IGridEntityComponent[] = [];
+
+	private _type: EntityTypes;
 
 	public constructor(options: GridEntityOptions)
 	{
 		this.scene = options.scene;
 		this.grid = options.grid;
-		this.reactsOnInput = options.reactsOnInput ?? false;
-		this.type = options.type;
+		this._type = options.type;
 
 		this._position = this.grid.toWorldPosition(options.location.x, options.location.y);
 		this._localHitbox = options.hitbox;
@@ -158,6 +157,11 @@ export class GridEntity implements ISceneObject, IComponentManager<IGridEntityCo
 				onComplete: () => resolve()
 			});
 		});
+	}
+
+	public changeType(type: EntityTypes): void
+	{
+		this._type = type;
 	}
 
 	protected _onPositionUpdated(): void

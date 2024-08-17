@@ -42,7 +42,7 @@ export class GameEvent<T>
 		this._subscribers = [];
 	}
 
-	public emit(data: T): void
+	public trigger(data: T): void
 	{
 		for (let i = 0; i < this._subscribers.length; i++)
 		{

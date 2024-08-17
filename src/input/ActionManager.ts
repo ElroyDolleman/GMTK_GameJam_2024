@@ -36,6 +36,8 @@ export class ActionManager
         this.left = options.keyboard.addKey("left");
         this.down = options.keyboard.addKey("down");
         this.right = options.keyboard.addKey("right");
+
+        this.level.onEntitiesMoved.addListener(this._onMoved, this);
     }
 
     public update(): void
@@ -72,6 +74,10 @@ export class ActionManager
 
         await this.awaitCurrentAction();
         this._currentActionPromise = undefined;
+    }
+
+    private _onMoved(): void
+    {
     }
 
     private _getStepFromInputs(): GridStep

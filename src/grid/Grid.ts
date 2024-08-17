@@ -55,6 +55,16 @@ export class Grid<T>
 		);
 	}
 
+	public getCellsAround(cellX: number, cellY: number): T[]
+	{
+		return [
+			this.getCell(cellX - 1, cellY),
+			this.getCell(cellX + 1, cellY),
+			this.getCell(cellX, cellY - 1),
+			this.getCell(cellX, cellY + 1),
+		].filter(cell => cell !== undefined);
+	}
+
 	public getCellsInCircle(circle: ICircle): T[]
 	{
 		const cells: T[] = [];

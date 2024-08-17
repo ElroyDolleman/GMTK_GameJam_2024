@@ -19,8 +19,7 @@ export class Player extends GridEntity
             scene: options.scene,
             grid: options.grid,
             debug: true,
-            reactsOnInput: true,
-            type: EntityTypes.None
+            type: EntityTypes.Controllable
         });
     }
 

@@ -8,6 +8,7 @@ import { EntityTypes, GridEntity } from "../entities/GridEntity";
 import { IGridEntityComponent } from "../entities/components/IGridEntityComponent";
 import { Constructor } from "../utils/ConstructorGeneric";
 import { SolidTile } from "../grid/tiles/SolidTile";
+import { GameEvent } from "../utils/GameEvent";
 
 export type GridStep =
 {
@@ -17,6 +18,8 @@ export type GridStep =
 
 export class Level
 {
+    public readonly onEntitiesMoved: GameEvent<void> = new GameEvent();
+
     public get cellWidth(): number { return this._levelData.tileWidth; }
     public get cellHeight(): number { return this._levelData.tileHeight; }
 
@@ -45,8 +48,11 @@ export class Level
 
     public async inputMove(step: GridStep, duration: number): Promise<void>
     {
-        const entities = this._entities.filter(e => e.reactsOnInput);
+        await this.moveEntities(this._entities.filter(e => e.type === EntityTypes.Controllable), step, duration);
+    }
 
+    public async moveEntities(entities: GridEntity[], step: GridStep, duration: number): Promise<void>
+    {
         if (!this.canEntitiesMove(entities, step))
         {
             return;
@@ -58,12 +64,16 @@ export class Level
             promises.push(this.moveEntity(entities[i], step, duration));
         }
         await Promise.all(promises);
+
+        this._handleMoved();
     }
 
     public canEntitiesMove(entities: GridEntity[], step: GridStep): boolean
     {
         const extraEntities: GridEntity[] = [];
-        for (let i = 0; i < entities.length; i++)
+        const length = entities.length;
+
+        for (let i = 0; i < length; i++)
         {
             const entity = entities[i];
             const location = entity.gridLocation;
@@ -81,7 +91,7 @@ export class Level
 
             for (let j = 0; j < tile.entities.length; j++)
             {
-                const entity = tile.entities[i];
+                const entity = tile.entities[j];
                 switch (entity.type)
                 {
                     case EntityTypes.Blockable:
@@ -172,6 +182,27 @@ export class Level
         });
     }
 
+    private _handleMoved(): void
+    {
+        const controllables = this._entities.filter(e => e.type === EntityTypes.Controllable);
+        // const attachables = this._entities.filter(e => e.type === EntityTypes.Attachable);
+
+        controllables.forEach(entity =>
+        {
+            const location = entity.gridLocation;
+            const grid = this.getGrid(entity.depth);
+            const cells = grid.getCellsAround(location.x, location.y);
+
+            cells.forEach(cell =>
+            {
+                const attachables = cell.entities.filter(e => e.type === EntityTypes.Attachable);
+                attachables.forEach(attachable => attachable.changeType(EntityTypes.Controllable));
+            });
+        });
+
+        this.onEntitiesMoved.trigger();
+    }
+
     private _createTile(tileType: TileType, tileId: number, tileIndex: number, layer: number): Tile
     {
         const gridX = tileIndex % this._levelData.rows;
@@ -208,5 +239,10 @@ export class Level
                     sprite
                 });
         }
+    }
+
+    public destroy(): void
+    {
+        this.onEntitiesMoved.removeAllListeners();
     }
 }
