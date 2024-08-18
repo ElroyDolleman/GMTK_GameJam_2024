@@ -101,6 +101,16 @@
    <property name="type" value="pit"/>
   </properties>
  </tile>
+ <tile id="29">
+  <properties>
+   <property name="type" value="pit"/>
+  </properties>
+ </tile>
+ <tile id="30">
+  <properties>
+   <property name="type" value="pit"/>
+  </properties>
+ </tile>
  <tile id="32">
   <properties>
    <property name="type" value="solid"/>
@@ -161,6 +171,16 @@
    <property name="type" value="pit"/>
   </properties>
  </tile>
+ <tile id="45">
+  <properties>
+   <property name="type" value="pit"/>
+  </properties>
+ </tile>
+ <tile id="46">
+  <properties>
+   <property name="type" value="pit"/>
+  </properties>
+ </tile>
  <tile id="53">
   <properties>
    <property name="type" value="pit"/>
@@ -217,6 +237,16 @@
   </properties>
  </tile>
  <tile id="72">
+  <properties>
+   <property name="type" value="pit"/>
+  </properties>
+ </tile>
+ <tile id="73">
+  <properties>
+   <property name="type" value="pit"/>
+  </properties>
+ </tile>
+ <tile id="74">
   <properties>
    <property name="type" value="pit"/>
   </properties>
