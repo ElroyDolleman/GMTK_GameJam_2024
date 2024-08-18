@@ -28,6 +28,7 @@ export type GridEntityOptions = {
 	sprite?: GameObjects.Sprite;
 
 	type: EntityTypes;
+	isPlayer: boolean;
 };
 
 export class GridEntity implements ISceneObject, IComponentManager<IGridEntityComponent>
@@ -73,9 +74,16 @@ export class GridEntity implements ISceneObject, IComponentManager<IGridEntityCo
 
 	public get type(): EntityTypes { return this._type; }
 
+	public get isKillable(): boolean
+	{
+		return this._type === EntityTypes.Controllable || this._type === EntityTypes.Attachable || this._type === EntityTypes.Victory;
+	}
+
 	public readonly scene: Scene;
 	public readonly grid: Grid<unknown>;
 	public readonly sprite?: GameObjects.Sprite;
+
+	public readonly isPlayer: boolean;
 
 	public readonly depth: number;
 
@@ -90,6 +98,7 @@ export class GridEntity implements ISceneObject, IComponentManager<IGridEntityCo
 	{
 		this.scene = options.scene;
 		this.grid = options.grid;
+		this.isPlayer = options.isPlayer;
 		this._type = options.type;
 
 		this._position = this.grid.toWorldPosition(options.location.x, options.location.y);

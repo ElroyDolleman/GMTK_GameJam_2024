@@ -50,6 +50,8 @@ export class Level
                     break;
             }
         });
+
+        this._handleMoved();
     }
 
     public async inputMove(step: GridStep, duration: number): Promise<void>
@@ -93,7 +95,7 @@ export class Level
 
             if (tile.damaging && (entity.type === EntityTypes.Attachable || entity.type === EntityTypes.Controllable))
             {
-                entity.kill();
+                // Skip the solid check. Entity will be killed later.
             }
             else if (tile.solid)
             {
@@ -218,7 +220,8 @@ export class Level
                 scene: this.scene,
                 type: data.type,
                 grid,
-                sprite
+                sprite,
+                isPlayer: data.type === EntityTypes.Controllable
             }));
             sprite.setOrigin(0, 0);
         });
@@ -226,7 +229,40 @@ export class Level
 
     private _handleMoved(): void
     {
+        let recheckAttachments = false;
+        const killables = this._entities.filter(e => e.isKillable);
+        for (let i = 0; i < killables.length; i++)
+        {
+            const cell = this.getCellUnderEntity(killables[i]);
+            if (cell.damaging)
+            {
+                killables[i].kill();
+                recheckAttachments = true;
+            }
+        }
+
         const controllables = this._entities.filter(e => e.type === EntityTypes.Controllable);
+        const player = controllables.find(e => e.isPlayer);
+        const playerDied = player === undefined;
+
+        if (playerDied)
+        {
+            controllables.forEach(entity => entity.changeType(EntityTypes.Attachable));
+            controllables.length = 0;
+        }
+        else if (recheckAttachments)
+        {
+            for (let i = 0; i < controllables.length; i++)
+            {
+                if (!controllables[i].isPlayer)
+                {
+                    controllables[i].changeType(EntityTypes.Attachable);
+                    controllables.splice(i, 1);
+                    i--;
+                }
+            };
+        }
+
         for (let i = 0; i < controllables.length; i++)
         {
             const entity = controllables[i];
