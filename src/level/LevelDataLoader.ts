@@ -165,6 +165,7 @@ export class LevelDataLoader
                 }
             });
 
+            // console.log("entity", name, type);
             result.push({ name, type, position, spriteName });
         }
 

@@ -91,6 +91,16 @@
    <property name="type" value="pit"/>
   </properties>
  </tile>
+ <tile id="27">
+  <properties>
+   <property name="type" value="pit"/>
+  </properties>
+ </tile>
+ <tile id="28">
+  <properties>
+   <property name="type" value="pit"/>
+  </properties>
+ </tile>
  <tile id="32">
   <properties>
    <property name="type" value="solid"/>
@@ -131,6 +141,26 @@
    <property name="type" value="pit"/>
   </properties>
  </tile>
+ <tile id="41">
+  <properties>
+   <property name="type" value="pit"/>
+  </properties>
+ </tile>
+ <tile id="42">
+  <properties>
+   <property name="type" value="pit"/>
+  </properties>
+ </tile>
+ <tile id="43">
+  <properties>
+   <property name="type" value="pit"/>
+  </properties>
+ </tile>
+ <tile id="44">
+  <properties>
+   <property name="type" value="pit"/>
+  </properties>
+ </tile>
  <tile id="53">
   <properties>
    <property name="type" value="pit"/>
@@ -147,6 +177,26 @@
   </properties>
  </tile>
  <tile id="56">
+  <properties>
+   <property name="type" value="pit"/>
+  </properties>
+ </tile>
+ <tile id="57">
+  <properties>
+   <property name="type" value="pit"/>
+  </properties>
+ </tile>
+ <tile id="58">
+  <properties>
+   <property name="type" value="pit"/>
+  </properties>
+ </tile>
+ <tile id="59">
+  <properties>
+   <property name="type" value="pit"/>
+  </properties>
+ </tile>
+ <tile id="60">
   <properties>
    <property name="type" value="pit"/>
   </properties>
@@ -171,6 +221,16 @@
    <property name="type" value="pit"/>
   </properties>
  </tile>
+ <tile id="75">
+  <properties>
+   <property name="type" value="pit"/>
+  </properties>
+ </tile>
+ <tile id="76">
+  <properties>
+   <property name="type" value="pit"/>
+  </properties>
+ </tile>
  <wangsets>
   <wangset name="walls" type="corner" tile="-1">
    <wangcolor name="" color="#ff0000" tile="-1" probability="1"/>
@@ -187,6 +247,24 @@
    <wangtile tileid="32" wangid="0,1,0,0,0,0,0,0"/>
    <wangtile tileid="33" wangid="0,1,0,0,0,0,0,1"/>
    <wangtile tileid="34" wangid="0,0,0,0,0,0,0,1"/>
+   <wangtile tileid="35" wangid="0,0,0,1,0,0,0,1"/>
+   <wangtile tileid="36" wangid="0,1,0,0,0,1,0,0"/>
+  </wangset>
+  <wangset name="holes" type="corner" tile="-1">
+   <wangcolor name="" color="#ff0000" tile="-1" probability="1"/>
+   <wangtile tileid="21" wangid="0,0,0,1,0,0,0,0"/>
+   <wangtile tileid="22" wangid="0,0,0,1,0,1,0,0"/>
+   <wangtile tileid="23" wangid="0,0,0,0,0,1,0,0"/>
+   <wangtile tileid="27" wangid="0,1,0,0,0,1,0,1"/>
+   <wangtile tileid="28" wangid="0,1,0,1,0,0,0,1"/>
+   <wangtile tileid="37" wangid="0,1,0,1,0,0,0,0"/>
+   <wangtile tileid="38" wangid="0,1,0,1,0,1,0,1"/>
+   <wangtile tileid="39" wangid="0,0,0,0,0,1,0,1"/>
+   <wangtile tileid="43" wangid="0,0,0,1,0,1,0,1"/>
+   <wangtile tileid="44" wangid="0,1,0,1,0,1,0,0"/>
+   <wangtile tileid="53" wangid="0,1,0,0,0,0,0,0"/>
+   <wangtile tileid="54" wangid="0,1,0,0,0,0,0,1"/>
+   <wangtile tileid="55" wangid="0,0,0,0,0,0,0,1"/>
   </wangset>
  </wangsets>
 </tileset>

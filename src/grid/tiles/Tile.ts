@@ -52,6 +52,10 @@ export abstract class Tile
 		{
 			this.entities.splice(index, 1);
 		}
+        else
+        {
+            console.error("Failed to remove entity from tile", this.location, entity.type);
+        }
     }
 
     public addEntity(entity: GridEntity): void

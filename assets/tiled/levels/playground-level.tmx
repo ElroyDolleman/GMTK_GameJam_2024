@@ -110,7 +110,7 @@
     <property name="type" value="attachable"/>
    </properties>
   </object>
-  <object id="20" name="Pushable" gid="254" x="192" y="112" width="16" height="16">
+  <object id="20" name="Pushable" gid="254" x="208" y="192" width="16" height="16">
    <properties>
     <property name="sprite" value="crate"/>
     <property name="type" value="pushable"/>
