@@ -5,15 +5,16 @@ import { ActionManager } from "../input/ActionManager";
 
 const LEVELS = [
 	// "playground-level",
-	"stairway-to-cake",
 	"tutorial",
 	"a-hole-lot-to-learn",
 	"pushitive-learning",
+	"slice-of-life",
 	"three-pushes-with-twist",
+	"cake-is-a-lie",
+	"stairway-to-cake",
+	"delivery-service",
 	"so-close-so-far",
 	"fitting-in",
-	"cake-is-a-lie",
-	"delivery-service",
 	"wholesome",
 ];
 
