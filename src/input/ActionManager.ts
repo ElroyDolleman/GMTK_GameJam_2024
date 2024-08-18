@@ -17,6 +17,7 @@ export type ActionManagerOptions = {
 export class ActionManager
 {
     public readonly onLevelReset: GameEvent<void> = new GameEvent();
+    public readonly onNextLevel: GameEvent<void> = new GameEvent();
 
     public readonly level: Level;
 
@@ -26,6 +27,7 @@ export class ActionManager
     public readonly right: GameInput;
 
     public readonly reset: GameInput;
+    public readonly next: GameInput;
 
     private _actions: Action[] = [];
     private _actionDuration: number = 200;
@@ -44,6 +46,7 @@ export class ActionManager
         this.right = new GameInput(options.keyboard.addKey("right"));
 
         this.reset = new GameInput(options.keyboard.addKey("r"));
+        this.next = new GameInput(options.keyboard.addKey("n"));
 
         this.level.onEntitiesMoved.addListener(this._onMoved, this);
     }
@@ -54,12 +57,17 @@ export class ActionManager
         this.left.update();
         this.down.update();
         this.right.update();
-
+        this.next.update();
         this.reset.update();
 
         if (this.reset.justDown)
         {
             this.onLevelReset.trigger();
+            return;
+        }
+        if (this.next.justDown)
+        {
+            this.onNextLevel.trigger();
             return;
         }
         if (this._noInputs)

@@ -79,6 +79,12 @@ export class GridEntity implements ISceneObject, IComponentManager<IGridEntityCo
 		return this._type === EntityTypes.Controllable || this._type === EntityTypes.Attachable || this._type === EntityTypes.Victory;
 	}
 
+	public get fallable(): boolean
+	{
+		// Hack: Controllable can also fall but has special logic and we exclude it here
+		return this._type === EntityTypes.Victory || this._type === EntityTypes.Attachable || this._type === EntityTypes.Pushable;
+	}
+
 	public readonly scene: Scene;
 	public readonly grid: Grid<unknown>;
 	public readonly sprite?: GameObjects.Sprite;

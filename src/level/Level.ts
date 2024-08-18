@@ -301,7 +301,7 @@ export class Level
             controllables.forEach(entity => entity.fall());
         }
 
-        const fallables = this._entities.filter(e => e.type === EntityTypes.Pushable || e.type === EntityTypes.Attachable);
+        const fallables = this._entities.filter(e => e.fallable);
         fallables.forEach(entity =>
         {
             const cell = this.getCellUnderEntity(entity);

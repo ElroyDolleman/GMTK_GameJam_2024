@@ -1,68 +1,110 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.0" orientation="orthogonal" renderorder="right-down" width="20" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="24">
+<map version="1.9" tiledversion="1.9.0" orientation="orthogonal" renderorder="right-down" width="20" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="31">
  <tileset firstgid="1" source="../tilesets/default_tileset.tsx"/>
  <layer id="1" name="Tile Layer 1" width="20" height="20">
   <data encoding="csv">
 18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,
-18,18,18,18,4,34,34,34,34,34,34,5,18,18,18,18,18,18,18,18,
-18,18,18,4,35,0,0,0,0,0,0,33,5,18,18,18,18,18,18,18,
-18,18,18,19,0,0,0,0,0,0,0,0,17,18,18,18,18,18,18,18,
-18,18,18,19,0,0,0,0,0,0,0,0,17,18,18,18,18,18,18,18,
-18,18,18,19,0,0,0,0,0,0,0,0,33,34,34,5,18,18,18,18,
-18,18,18,20,2,3,0,0,0,0,0,0,0,0,0,33,5,18,18,18,
-18,18,18,18,18,20,3,0,0,0,0,0,0,0,0,0,17,18,18,18,
-18,18,18,18,18,4,35,70,71,72,0,0,0,0,0,0,17,18,18,18,
-18,18,18,18,4,35,0,0,0,25,0,0,0,0,0,0,17,18,18,18,
-18,18,18,18,19,0,0,0,0,41,0,0,0,0,0,0,17,18,18,18,
-18,18,18,18,19,0,0,0,0,41,0,0,0,0,0,0,17,18,18,18,
-18,18,18,18,19,0,0,0,0,57,70,71,72,0,0,0,17,18,18,18,
-18,18,18,18,19,0,0,0,0,0,0,0,0,0,0,0,33,5,18,18,
-18,18,18,18,19,0,0,0,0,0,0,0,0,0,0,0,0,33,5,18,
-18,18,18,18,20,3,0,0,0,0,0,0,0,0,0,0,0,0,17,18,
-18,18,18,18,18,20,3,0,0,0,0,0,0,0,0,0,0,0,17,18,
-18,18,18,18,18,18,20,3,0,0,0,0,0,0,0,0,0,1,21,18,
-18,18,18,18,18,18,18,20,2,2,2,2,2,2,2,2,2,21,18,18,
+18,18,18,18,18,4,34,34,34,34,5,18,18,18,18,18,18,18,18,18,
+18,18,18,4,34,35,0,0,0,0,33,5,18,18,18,18,18,18,18,18,
+18,18,18,19,0,0,0,0,0,0,0,17,18,18,18,18,18,18,18,18,
+18,18,18,19,0,0,0,0,0,0,0,17,18,18,18,18,18,18,18,18,
+18,18,18,19,0,0,0,0,0,0,0,33,34,34,5,18,18,18,18,18,
+18,18,18,20,3,0,0,22,24,0,0,0,0,0,33,5,18,18,18,18,
+18,18,18,18,20,3,22,39,40,0,0,0,0,0,0,17,18,18,18,18,
+18,18,18,18,18,19,38,39,40,0,0,0,0,0,0,17,18,18,18,18,
+18,18,18,18,18,19,38,39,40,0,0,0,0,0,0,17,18,18,18,18,
+18,18,18,18,18,19,38,39,40,0,0,0,0,0,0,17,18,18,18,18,
+18,18,18,18,18,19,38,39,40,0,0,0,0,0,0,17,18,18,18,18,
+18,18,18,18,18,19,54,55,39,71,71,72,0,0,0,17,18,18,18,18,
+18,18,18,18,18,19,0,0,0,0,0,0,0,0,0,33,5,18,18,18,
+18,18,18,18,18,19,0,0,0,0,0,0,0,0,0,0,33,5,18,18,
+18,18,18,18,18,19,0,0,0,0,0,0,0,0,0,0,0,17,18,18,
+18,18,18,18,18,20,3,0,0,0,0,0,0,0,0,0,0,17,18,18,
+18,18,18,18,18,18,20,3,0,0,0,0,0,0,0,0,1,21,18,18,
+18,18,18,18,18,18,18,20,2,2,2,2,2,2,2,2,21,18,18,18,
 18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18
 </data>
  </layer>
  <objectgroup id="2" name="Object Layer 1">
-  <object id="4" name="Controllable" gid="256" x="224" y="256" width="16" height="16">
+  <object id="4" name="Controllable" gid="256" x="208" y="256" width="16" height="16">
    <properties>
     <property name="sprite" value="player"/>
     <property name="type" value="controllable"/>
    </properties>
   </object>
-  <object id="10" name="Attachable" gid="255" x="224" y="192" width="16" height="16">
+  <object id="24" name="Controllable" gid="256" x="208" y="256" width="16" height="16">
+   <properties>
+    <property name="sprite" value="player"/>
+    <property name="type" value="controllable"/>
+   </properties>
+  </object>
+  <object id="10" name="Attachable" gid="255" x="208" y="192" width="16" height="16">
    <properties>
     <property name="sprite" value="attachable"/>
     <property name="type" value="attachable"/>
    </properties>
   </object>
-  <object id="17" name="Victory" gid="253" x="128" y="64" width="16" height="16">
+  <object id="25" name="Attachable" gid="255" x="208" y="192" width="16" height="16">
+   <properties>
+    <property name="sprite" value="attachable"/>
+    <property name="type" value="attachable"/>
+   </properties>
+  </object>
+  <object id="17" name="Victory" gid="253" x="112" y="64" width="16" height="16">
    <properties>
     <property name="sprite" value="cake"/>
     <property name="type" value="victory"/>
    </properties>
   </object>
-  <object id="19" name="Attachable" gid="255" x="224" y="176" width="16" height="16">
+  <object id="26" name="Victory" gid="253" x="112" y="64" width="16" height="16">
+   <properties>
+    <property name="sprite" value="cake"/>
+    <property name="type" value="victory"/>
+   </properties>
+  </object>
+  <object id="19" name="Attachable" gid="255" x="208" y="176" width="16" height="16">
    <properties>
     <property name="sprite" value="attachable"/>
     <property name="type" value="attachable"/>
    </properties>
   </object>
-  <object id="20" name="Attachable" gid="255" x="224" y="160" width="16" height="16">
+  <object id="27" name="Attachable" gid="255" x="208" y="176" width="16" height="16">
    <properties>
     <property name="sprite" value="attachable"/>
     <property name="type" value="attachable"/>
    </properties>
   </object>
-  <object id="21" name="Attachable" gid="255" x="224" y="144" width="16" height="16">
+  <object id="20" name="Attachable" gid="255" x="208" y="160" width="16" height="16">
    <properties>
     <property name="sprite" value="attachable"/>
     <property name="type" value="attachable"/>
    </properties>
   </object>
-  <object id="23" name="Attachable" gid="255" x="96" y="64" width="16" height="16">
+  <object id="28" name="Attachable" gid="255" x="208" y="160" width="16" height="16">
+   <properties>
+    <property name="sprite" value="attachable"/>
+    <property name="type" value="attachable"/>
+   </properties>
+  </object>
+  <object id="21" name="Attachable" gid="255" x="208" y="144" width="16" height="16">
+   <properties>
+    <property name="sprite" value="attachable"/>
+    <property name="type" value="attachable"/>
+   </properties>
+  </object>
+  <object id="29" name="Attachable" gid="255" x="208" y="144" width="16" height="16">
+   <properties>
+    <property name="sprite" value="attachable"/>
+    <property name="type" value="attachable"/>
+   </properties>
+  </object>
+  <object id="23" name="Attachable" gid="255" x="80" y="64" width="16" height="16">
+   <properties>
+    <property name="sprite" value="attachable"/>
+    <property name="type" value="attachable"/>
+   </properties>
+  </object>
+  <object id="30" name="Attachable" gid="255" x="80" y="64" width="16" height="16">
    <properties>
     <property name="sprite" value="attachable"/>
     <property name="type" value="attachable"/>

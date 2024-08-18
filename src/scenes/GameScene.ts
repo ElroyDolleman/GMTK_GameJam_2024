@@ -69,6 +69,7 @@ export class GameScene extends Scene
 		});
 
 		this._level.onLevelWon.addListener(this._handleVictory, this);
+		this.actionManager.onNextLevel.addListener(this._handleVictory, this);
 		this.actionManager.onLevelReset.addListener(this._handleReset, this);
 	}
 
