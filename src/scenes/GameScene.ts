@@ -5,12 +5,16 @@ import { ActionManager } from "../input/ActionManager";
 
 const LEVELS = [
 	// "playground-level",
+	"stairway-to-cake",
+	"tutorial",
+	"a-hole-lot-to-learn",
+	"pushitive-learning",
+	"three-pushes-with-twist",
 	"so-close-so-far",
 	"fitting-in",
 	"cake-is-a-lie",
 	"delivery-service",
 	"wholesome",
-	"three-pushes-with-twist",
 ];
 
 export type GameSceneOptions = {
@@ -40,7 +44,7 @@ export class GameScene extends Scene
 
 	public init(): void
 	{
-		console.log("init", this._levelNumber);
+		console.log("init", this._levelNumber, this._levelName);
 	}
 
 	public preload(): void

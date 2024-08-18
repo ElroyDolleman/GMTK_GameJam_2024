@@ -165,6 +165,12 @@ export class LevelDataLoader
                 }
             });
 
+            // This mistake happened to often, better break everything
+            if (result.find(test => test.position.x === position.x && test.position.y === position.y))
+            {
+                throw "Overlapping entities :C";
+            }
+
             // console.log("entity", name, type);
             result.push({ name, type, position, spriteName });
         }
