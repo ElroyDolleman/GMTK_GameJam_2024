@@ -227,8 +227,9 @@ export class Level
     private _handleMoved(): void
     {
         const controllables = this._entities.filter(e => e.type === EntityTypes.Controllable);
-        controllables.forEach(entity =>
+        for (let i = 0; i < controllables.length; i++)
         {
+            const entity = controllables[i];
             const location = entity.gridLocation;
             const grid = this.getGrid(entity.depth);
             const cells = grid.getCellsAround(location.x, location.y);
@@ -236,9 +237,13 @@ export class Level
             cells.forEach(cell =>
             {
                 const attachables = cell.entities.filter(e => e.type === EntityTypes.Attachable);
-                attachables.forEach(attachable => attachable.changeType(EntityTypes.Controllable));
+                attachables.forEach(attachable =>
+                {
+                    attachable.changeType(EntityTypes.Controllable);
+                    controllables.push(attachable);
+                });
             });
-        });
+        }
 
         let aboveHole = controllables.length > 0;
         for (let i = 0; i < controllables.length; i++)

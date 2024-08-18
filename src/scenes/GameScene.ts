@@ -4,7 +4,10 @@ import { Level } from "../level/Level";
 import { ActionManager } from "../input/ActionManager";
 
 const LEVELS = [
-	"playground-level",
+	// "playground-level",
+	"fitting-in",
+	"cake-is-a-lie",
+	"delivery-service",
 	"wholesome",
 	"three-pushes-with-twist",
 ];
