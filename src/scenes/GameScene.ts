@@ -5,19 +5,19 @@ import { ActionManager } from "../input/ActionManager";
 
 const LEVELS = [
 	// "playground-level",
-	"grow-and-shrink",
 	"tutorial",
 	"a-hole-lot-to-learn",
 	"pushitive-learning",
 	"slice-of-life",
 	"cake-is-a-lie",
 	"three-pushes-with-twist",
+	"wholesome",
 	"stairway-to-cake",
 	"delivery-service",
 	"so-close-so-far",
+	"a-slice-rotation",
 	"fitting-in",
 	"small-alley",
-	"wholesome",
 ];
 
 export type GameSceneOptions = {
