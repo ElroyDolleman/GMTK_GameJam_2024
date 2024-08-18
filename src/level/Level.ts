@@ -104,14 +104,19 @@ export class Level
 
             for (let j = 0; j < tile.entities.length; j++)
             {
-                const entity = tile.entities[j];
-                switch (entity.type)
+                const otherEntity = tile.entities[j];
+                switch (otherEntity.type)
                 {
                     case EntityTypes.Blockable:
                         return false;
+                    case EntityTypes.Victory:
                     case EntityTypes.Attachable:
                     case EntityTypes.Pushable:
-                        const moreEntities = [entity];
+                        if (entity.isPlayer && otherEntity.type === EntityTypes.Victory)
+                        {
+                            break;
+                        }
+                        const moreEntities = [otherEntity];
                         if (!this.canEntitiesMove(moreEntities, step))
                         {
                             return false;
@@ -306,23 +311,18 @@ export class Level
             }
         });
 
-        let gotCake = false;
-        controllables.forEach(entity =>
+        if (!playerDied)
         {
-            const cell = this.getCellUnderEntity(entity);
-
+            const cell = this.getCellUnderEntity(player);
             const cakes = cell.entities.filter(e => e.type === EntityTypes.Victory);
+
             if (cakes.length > 0)
             {
-                gotCake = true;
+                this.onLevelWon.trigger();
             }
-        });
+        }
 
         this.onEntitiesMoved.trigger();
-        if (gotCake)
-        {
-            this.onLevelWon.trigger();
-        }
     }
 
     private _createTile(tileType: TileType, tileId: number, tileIndex: number, layer: number): Tile

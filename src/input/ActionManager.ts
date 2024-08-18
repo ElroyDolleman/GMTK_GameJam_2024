@@ -1,6 +1,8 @@
 import { Input, Scene } from "phaser";
 import { IPoint } from "../geometry/IPoint";
 import { GridStep, Level } from "../level/Level";
+import { GameEvent } from "../utils/GameEvent";
+import { GameInput } from "./GameInput";
 
 export type Action =
 {
@@ -14,12 +16,16 @@ export type ActionManagerOptions = {
 
 export class ActionManager
 {
+    public readonly onLevelReset: GameEvent<void> = new GameEvent();
+
     public readonly level: Level;
 
-    public readonly up: Input.Keyboard.Key;
-    public readonly left: Input.Keyboard.Key;
-    public readonly down: Input.Keyboard.Key;
-    public readonly right: Input.Keyboard.Key;
+    public readonly up: GameInput;
+    public readonly left: GameInput;
+    public readonly down: GameInput;
+    public readonly right: GameInput;
+
+    public readonly reset: GameInput;
 
     private _actions: Action[] = [];
     private _actionDuration: number = 200;
@@ -32,16 +38,30 @@ export class ActionManager
     {
         this.level = options.level;
 
-        this.up = options.keyboard.addKey("up");
-        this.left = options.keyboard.addKey("left");
-        this.down = options.keyboard.addKey("down");
-        this.right = options.keyboard.addKey("right");
+        this.up = new GameInput(options.keyboard.addKey("up"));
+        this.left = new GameInput(options.keyboard.addKey("left"));
+        this.down = new GameInput(options.keyboard.addKey("down"));
+        this.right = new GameInput(options.keyboard.addKey("right"));
+
+        this.reset = new GameInput(options.keyboard.addKey("r"));
 
         this.level.onEntitiesMoved.addListener(this._onMoved, this);
     }
 
     public update(): void
     {
+        this.up.update();
+        this.left.update();
+        this.down.update();
+        this.right.update();
+
+        this.reset.update();
+
+        if (this.reset.justDown)
+        {
+            this.onLevelReset.trigger();
+            return;
+        }
         if (this._noInputs)
         {
             return;

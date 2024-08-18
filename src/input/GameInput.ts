@@ -1,5 +1,9 @@
 export class GameInput
 {
+	public get isUp(): boolean
+	{
+		return !this.isDown;
+	}
 	public get heldDownFrames(): number
 	{
 		return this._heldDownFrames;

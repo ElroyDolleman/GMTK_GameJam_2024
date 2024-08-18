@@ -69,6 +69,7 @@ export class GameScene extends Scene
 		});
 
 		this._level.onLevelWon.addListener(this._handleVictory, this);
+		this.actionManager.onLevelReset.addListener(this._handleReset, this);
 	}
 
 	public update(time: number, delta: number): void
@@ -80,6 +81,12 @@ export class GameScene extends Scene
 	{
 		this._level.destroy();
 		this._levelNumber++;
+		this.scene.restart();
+	}
+
+	private _handleReset(): void
+	{
+		this._level.destroy();
 		this.scene.restart();
 	}
 }
