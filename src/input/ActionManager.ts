@@ -3,6 +3,7 @@ import { IPoint } from "../geometry/IPoint";
 import { GridStep, Level } from "../level/Level";
 import { GameEvent } from "../utils/GameEvent";
 import { GameInput } from "./GameInput";
+import { EntityTypes, GridEntity } from "../entities/GridEntity";
 
 export type Action =
 {
@@ -14,8 +15,33 @@ export type ActionManagerOptions = {
     keyboard: Input.Keyboard.KeyboardPlugin;
 }
 
+export type EntityTypeChange =
+{
+    from: EntityTypes;
+    to: EntityTypes;
+}
+
+export type EntityMove =
+{
+    from: IPoint;
+    to: IPoint;
+}
+
+export type StepHistory =
+{
+    entity: GridEntity;
+    typeChange?: EntityTypeChange;
+    move?: EntityMove;
+}
+
 export class ActionManager
 {
+    public static instance: ActionManager;
+
+    public history: Record<number, StepHistory[] | undefined> = {};
+
+    public get stepCount(): number { return this._actions.length; }
+
     public readonly onLevelReset: GameEvent<void> = new GameEvent();
     public readonly onNextLevel: GameEvent<void> = new GameEvent();
 
@@ -28,16 +54,19 @@ export class ActionManager
 
     public readonly reset: GameInput;
     public readonly next: GameInput;
+    public readonly undo: GameInput;
 
     private _actions: Action[] = [];
-    private _actionDuration: number = 200;
+    private _actionDuration: number = 180;
 
-    private _currentActionPromise?: Promise<void>;
+    private _currentActionPromise?: Promise<boolean>;
 
     private get _noInputs(): boolean { return this.up.isUp && this.down.isUp && this.left.isUp && this.right.isUp; }
 
     public constructor(options: ActionManagerOptions)
     {
+        ActionManager.instance = this;
+
         this.level = options.level;
 
         this.up = new GameInput(options.keyboard.addKey("up"));
@@ -47,8 +76,48 @@ export class ActionManager
 
         this.reset = new GameInput(options.keyboard.addKey("r"));
         this.next = new GameInput(options.keyboard.addKey("n"));
+        this.undo = new GameInput(options.keyboard.addKey("z"));
 
         this.level.onEntitiesMoved.addListener(this._onMoved, this);
+    }
+
+    public async stepBack(): Promise<boolean>
+    {
+        const step = this.stepCount - 1;
+        if (step < 0)
+        {
+            return false;
+        }
+        const history = this.history[step] ?? [];
+        const promises: Promise<unknown>[] = [];
+
+        for (let i = 0; i < history.length; i++)
+        {
+            const data = history[i];
+            if (data.move)
+            {
+                promises.push(this.level.moveEntity(
+                    data.entity,
+                    {
+                        x: data.move.from.x - data.move.to.x,
+                        y: data.move.from.y - data.move.to.y,
+                    } as GridStep,
+                    this._actionDuration,
+                    false
+                ));
+            }
+            if (data.typeChange)
+            {
+                data.entity.changeType(data.typeChange.from, false);
+            }
+        }
+
+        this.history[step] = undefined;
+        this._actions.length = step;
+
+        await Promise.all(promises);
+        console.log("Step Back", step);
+        return true;
     }
 
     public update(): void
@@ -59,6 +128,7 @@ export class ActionManager
         this.right.update();
         this.next.update();
         this.reset.update();
+        this.undo.update();
 
         if (this.reset.justDown)
         {
@@ -70,15 +140,19 @@ export class ActionManager
             this.onNextLevel.trigger();
             return;
         }
-        if (this._noInputs)
+        if (this.isPerformingAction())
         {
             return;
         }
-
-        const step = this._getStepFromInputs();
-
-        if (!this.isPerformingAction())
+        if (this.undo.isDown)
         {
+            this._currentActionPromise = this.stepBack();
+            this._currentActionPromise.then(() => this._currentActionPromise = undefined);
+            return;
+        }
+        if (!this._noInputs)
+        {
+            const step = this._getStepFromInputs();
             this.doAction({ step });
         }
     }
@@ -95,13 +169,18 @@ export class ActionManager
 
     public async doAction(action: Action): Promise<void>
     {
-        await this.awaitCurrentAction();
-
-        this._currentActionPromise = this.level.inputMove(action.step, this._actionDuration);
-        this._actions.push(action);
+        this.history[this.stepCount] = [];
 
         await this.awaitCurrentAction();
+
+        const hasMoved = await (this._currentActionPromise = this.level.inputMove(action.step, this._actionDuration));
         this._currentActionPromise = undefined;
+
+        if (hasMoved)
+        {
+            this._actions.push(action);
+            console.log("Step", this.stepCount);
+        }
     }
 
     private _onMoved(): void

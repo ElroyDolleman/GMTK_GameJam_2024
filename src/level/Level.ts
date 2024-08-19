@@ -54,16 +54,22 @@ export class Level
         this._handleMoved();
     }
 
-    public async inputMove(step: GridStep, duration: number): Promise<void>
+    public async inputMove(step: GridStep, duration: number): Promise<boolean>
     {
-        await this.moveEntities(this._entities.filter(e => e.type === EntityTypes.Controllable), step, duration);
+        return this.moveEntities(this._entities.filter(e => e.type === EntityTypes.Controllable), step, duration);
     }
 
-    public async moveEntities(entities: GridEntity[], step: GridStep, duration: number): Promise<void>
+    public async moveEntities(entities: GridEntity[], step: GridStep, duration: number): Promise<boolean>
     {
+        const player = this._entities.find(e => e.isPlayer);
+        if (player === undefined || player.type !== EntityTypes.Controllable)
+        {
+            return false;
+        }
+
         if (!this.canEntitiesMove(entities, step))
         {
-            return;
+            return false;
         }
 
         const promises: Promise<void>[] = [];
@@ -73,7 +79,8 @@ export class Level
         }
         await Promise.all(promises);
 
-        this._handleMoved();
+        await this._handleMoved();
+        return true;
     }
 
     public canEntitiesMove(entities: GridEntity[], step: GridStep): boolean
@@ -130,7 +137,7 @@ export class Level
         return true;
     }
 
-    public async moveEntity(entity: GridEntity, step: GridStep, duration: number): Promise<void>
+    public async moveEntity(entity: GridEntity, step: GridStep, duration: number, saveHistory: boolean = true): Promise<void>
     {
         const grid = this.getGrid(entity.depth);
         const location = entity.gridLocation;
@@ -138,7 +145,7 @@ export class Level
         const current = grid.getCell(location.x, location.y);
         const next = grid.getCell(location.x + step.x, location.y + step.y);
 
-        await entity.move(step.x, step.y, duration);
+        await entity.move(step.x, step.y, duration, saveHistory);
 
         current.removeEntity(entity);
         next.addEntity(entity);
@@ -232,8 +239,10 @@ export class Level
         });
     }
 
-    private _handleMoved(): void
+    private async _handleMoved(): Promise<void>
     {
+        const promises: Promise<unknown>[] = [];
+
         let recheckAttachments = false;
         const killables = this._entities.filter(e => e.isKillable);
         for (let i = 0; i < killables.length; i++)
@@ -241,7 +250,7 @@ export class Level
             const cell = this.getCellUnderEntity(killables[i]);
             if (cell.damaging)
             {
-                killables[i].kill();
+                promises.push(killables[i].changeType(EntityTypes.Killed));
                 recheckAttachments = true;
             }
         }
@@ -252,7 +261,10 @@ export class Level
 
         if (playerDied)
         {
-            controllables.forEach(entity => entity.changeType(EntityTypes.Attachable));
+            for (let i = 0; i < controllables.length; i++)
+            {
+                promises.push(controllables[i].changeType(EntityTypes.Attachable));
+            }
             controllables.length = 0;
         }
         else if (recheckAttachments)
@@ -261,7 +273,7 @@ export class Level
             {
                 if (!controllables[i].isPlayer)
                 {
-                    controllables[i].changeType(EntityTypes.Attachable);
+                    promises.push(controllables[i].changeType(EntityTypes.Attachable));
                     controllables.splice(i, 1);
                     i--;
                 }
@@ -275,15 +287,15 @@ export class Level
             const grid = this.getGrid(entity.depth);
             const cells = grid.getCellsAround(location.x, location.y);
 
-            cells.forEach(cell =>
+            for (let c = 0; c < cells.length; c++)
             {
-                const attachables = cell.entities.filter(e => e.type === EntityTypes.Attachable);
-                attachables.forEach(attachable =>
+                const attachables = cells[c].entities.filter(e => e.type === EntityTypes.Attachable);
+                for (let k = 0; k < attachables.length; k++)
                 {
-                    attachable.changeType(EntityTypes.Controllable);
-                    controllables.push(attachable);
-                });
-            });
+                    promises.push(attachables[k].changeType(EntityTypes.Controllable));
+                    controllables.push(attachables[k]);
+                };
+            };
         }
 
         let aboveHole = controllables.length > 0;
@@ -298,18 +310,21 @@ export class Level
         }
         if (aboveHole)
         {
-            controllables.forEach(entity => entity.fall());
+            for (let i = 0; i < controllables.length; i++)
+            {
+                promises.push(controllables[i].changeType(EntityTypes.Falling));
+            }
         }
 
         const fallables = this._entities.filter(e => e.fallable);
-        fallables.forEach(entity =>
+        for (let i = 0; i < fallables.length; i++)
         {
-            const cell = this.getCellUnderEntity(entity);
+            const cell = this.getCellUnderEntity(fallables[i]);
             if (cell.hole)
             {
-                entity.fall();
+                promises.push(fallables[i].changeType(EntityTypes.Falling));
             }
-        });
+        }
 
         if (!playerDied)
         {
@@ -322,6 +337,7 @@ export class Level
             }
         }
 
+        await Promise.all(promises);
         this.onEntitiesMoved.trigger();
     }
 

@@ -7,6 +7,7 @@ import { ISceneObject } from "./ISceneObject";
 import { IGridEntityComponent } from "./components/IGridEntityComponent";
 import { IComponentManager } from "../utils/IComponentManager";
 import { Constructor } from "../utils/ConstructorGeneric";
+import { ActionManager } from "../input/ActionManager";
 
 export enum EntityTypes
 {
@@ -15,7 +16,9 @@ export enum EntityTypes
 	Blockable,
 	Pushable,
 	Attachable,
-	Victory
+	Victory,
+	Falling,
+	Killed
 }
 
 export type GridEntityOptions = {
@@ -30,6 +33,12 @@ export type GridEntityOptions = {
 	type: EntityTypes;
 	isPlayer: boolean;
 };
+
+export type TypeChange =
+{
+	step: number;
+	type: EntityTypes;
+}
 
 export class GridEntity implements ISceneObject, IComponentManager<IGridEntityComponent>
 {
@@ -151,19 +160,36 @@ export class GridEntity implements ISceneObject, IComponentManager<IGridEntityCo
 		}
 	}
 
-	public move(amountX: -1 | 0 | 1, amountY: -1 | 0 | 1, duration: number): Promise<void>
+	public move(amountX: number, amountY: number, duration: number, saveHistory: boolean = true): Promise<void>
 	{
 		const location = this.gridLocation;
-		const destination = this.grid.toWorldPosition(location.x + amountX, location.y + amountY);
+		const gridDestination = { x: location.x + amountX, y: location.y + amountY };
+		const destination = this.grid.toWorldPosition(gridDestination.x, gridDestination.y);
 
-		if (amountX !== 0 && amountY !== 0)
-		{
-			throw "Can't move diagonally >:c";
-		}
 		if (amountX === 0 && amountY === 0)
 		{
 			// We went absolutely no where :D
 			return Promise.resolve();
+		}
+
+		if (saveHistory)
+		{
+			const step = ActionManager.instance.stepCount;
+			const history = ActionManager.instance.history[step];
+			if (history === undefined)
+			{
+				console.error("Something went wrong with the step history", ActionManager.instance.history);
+			}
+			else
+			{
+				history.push({
+					entity: this,
+					move: {
+						from: location,
+						to: gridDestination
+					}
+				});
+			}
 		}
 
 		return new Promise<void>(resolve =>
@@ -181,37 +207,84 @@ export class GridEntity implements ISceneObject, IComponentManager<IGridEntityCo
 		});
 	}
 
-	public changeType(type: EntityTypes): void
+	public async changeType(type: EntityTypes, saveHistory: boolean = true): Promise<void>
 	{
+		const step = ActionManager.instance.stepCount;
+
+		if (saveHistory)
+		{
+			const history = ActionManager.instance.history[step];
+			if (history === undefined)
+			{
+				console.error("Something went wrong with the step history", ActionManager.instance.history);
+			}
+			else
+			{
+				history.push({
+					entity: this,
+					typeChange: {
+						from: this._type,
+						to: type
+					}
+				});
+			}
+		}
+
+		if (type !== EntityTypes.Falling && type !== EntityTypes.Killed && this.sprite && !this.sprite.visible)
+		{
+			this.sprite.setVisible(true);
+		}
+
+		switch (type)
+		{
+			case EntityTypes.Falling:
+				await this._fall();
+				break;
+			case EntityTypes.Killed:
+				this._kill();
+				break;
+		}
+
 		this._type = type;
 	}
 
-	public kill(): void
+	protected _kill(): void
 	{
 		this.sprite?.setVisible(false);
-		this.changeType(EntityTypes.None);
 	}
 
-	public fall(): void
+	protected _fall(): Promise<void>
 	{
-		this.changeType(EntityTypes.None);
-
-		if (!this.sprite)
+		return new Promise<void>(resolve =>
 		{
-			return;
-		}
+			if (!this.sprite)
+			{
+				resolve();
+				return;
+			}
+			const sprite = this.sprite;
+			sprite.x += sprite.width / 2;
+			sprite.y += sprite.height / 2;
+			sprite.setOrigin(0.5, 0.5);
 
-		this.sprite.x += this.sprite.width / 2;
-		this.sprite.y += this.sprite.height / 2;
-		this.sprite.setOrigin(0.5, 0.5);
+			const tween = this.scene.tweens.add({
+				targets: sprite,
+				duration: 500,
+				props: {
+					scale: 0,
+				},
+				onComplete: () =>
+				{
+					sprite.setVisible(false);
 
-		const tween = this.scene.tweens.add({
-			targets: this.sprite,
-			duration: 500,
-			props: {
-				scale: 0,
-			},
-			onComplete: () => this.sprite?.setVisible(false)
+					sprite.scale = 1;
+					sprite.setOrigin(0, 0);
+					sprite.x -= sprite.width / 2;
+					sprite.y -= sprite.height / 2;
+
+					resolve();
+				}
+			});
 		});
 	}
 
