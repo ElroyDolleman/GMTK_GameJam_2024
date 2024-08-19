@@ -4,21 +4,21 @@ import { Level } from "../level/Level";
 import { ActionManager } from "../input/ActionManager";
 
 const LEVELS = [
-	"tutorial",
-	"playground-level",
+	"sticky-situation",
 	"a-hole-lot-to-learn",
 	"pushitive-learning",
 	"slice-of-life",
 	"cake-is-a-lie",
-	"three-pushes-with-twist",
-	"wholesome",
+	"out-of-the-box",
+	"holesome",
 	"hole-slicing",
 	"stairway-to-cake",
 	"delivery-service",
-	"so-close-so-far",
+	"sweet-little-corner",
 	"a-slice-rotation",
 	"fitting-in",
-	"small-alley",
+	"dont-drop-the-cake",
+	"supply-chain",
 ];
 
 export type GameSceneOptions = {
@@ -31,7 +31,7 @@ export class GameScene extends Scene
 
 	public actionManager!: ActionManager;
 
-	private _levelNumber: number = 1;
+	private _levelNumber: number = 0;
 	private get _levelName(): string { return LEVELS[this._levelNumber % LEVELS.length]; }
 
 	private _level!: Level;

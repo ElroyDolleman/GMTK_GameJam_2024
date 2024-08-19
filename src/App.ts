@@ -8,7 +8,7 @@ export const game = new Game({
 	height: 320,
 	pixelArt: true,
 	zoom: 2,
-	backgroundColor: "#FFFFFF",
+	backgroundColor: "#eafcff",
 	title: "GMTK Game Jam 2024",
 	version: "0.0.1",
 	disableContextMenu: true,

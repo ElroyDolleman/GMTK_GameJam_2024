@@ -162,6 +162,16 @@ export class LevelDataLoader
                 if (prop["name"] === "sprite")
                 {
                     spriteName = prop["value"] ?? "";
+
+                    switch(spriteName)
+                    {
+                        case "player":
+                            spriteName = "player1";
+                            break;
+                        case "cake":
+                            spriteName = "cake1";
+                            break;
+                    }
                 }
             });
 
