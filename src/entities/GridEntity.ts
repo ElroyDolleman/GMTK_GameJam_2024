@@ -209,10 +209,9 @@ export class GridEntity implements ISceneObject, IComponentManager<IGridEntityCo
 
 	public async changeType(type: EntityTypes, saveHistory: boolean = true): Promise<void>
 	{
-		const step = ActionManager.instance.stepCount;
-
 		if (saveHistory)
 		{
+			const step = ActionManager.instance.stepCount;
 			const history = ActionManager.instance.history[step];
 			if (history === undefined)
 			{

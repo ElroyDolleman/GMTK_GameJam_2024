@@ -93,7 +93,7 @@ export class ActionManager
         const history = this.history[step] ?? [];
         const promises: Promise<unknown>[] = [];
 
-        for (let i = 0; i < history.length; i++)
+        for (let i = history.length - 1; i >= 0; i--)
         {
             const data = history[i];
             if (data.move)
@@ -128,7 +128,7 @@ export class ActionManager
         this.left.update();
         this.down.update();
         this.right.update();
-        // this.next.update();
+        this.next.update();
         this.reset.update();
         this.undo.update();
 

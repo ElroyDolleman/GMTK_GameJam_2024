@@ -51,7 +51,7 @@ export class Level
             }
         });
 
-        this._handleMoved();
+        this._handleMoved(false);
     }
 
     public async inputMove(step: GridStep, duration: number): Promise<boolean>
@@ -239,7 +239,7 @@ export class Level
         });
     }
 
-    private async _handleMoved(): Promise<void>
+    private async _handleMoved(saveHistory: boolean = true): Promise<void>
     {
         const promises: Promise<unknown>[] = [];
 
@@ -250,7 +250,7 @@ export class Level
             const cell = this.getCellUnderEntity(killables[i]);
             if (cell.damaging)
             {
-                promises.push(killables[i].changeType(EntityTypes.Killed));
+                promises.push(killables[i].changeType(EntityTypes.Killed, saveHistory));
                 recheckAttachments = true;
             }
         }
@@ -263,7 +263,7 @@ export class Level
         {
             for (let i = 0; i < controllables.length; i++)
             {
-                promises.push(controllables[i].changeType(EntityTypes.Attachable));
+                promises.push(controllables[i].changeType(EntityTypes.Attachable, saveHistory));
             }
             controllables.length = 0;
         }
@@ -273,7 +273,8 @@ export class Level
             {
                 if (!controllables[i].isPlayer)
                 {
-                    promises.push(controllables[i].changeType(EntityTypes.Attachable));
+                    // Change all back to Attachable's so it will figure out which ones to connect properly again later
+                    promises.push(controllables[i].changeType(EntityTypes.Attachable, saveHistory));
                     controllables.splice(i, 1);
                     i--;
                 }
@@ -292,7 +293,7 @@ export class Level
                 const attachables = cells[c].entities.filter(e => e.type === EntityTypes.Attachable);
                 for (let k = 0; k < attachables.length; k++)
                 {
-                    promises.push(attachables[k].changeType(EntityTypes.Controllable));
+                    promises.push(attachables[k].changeType(EntityTypes.Controllable, saveHistory));
                     controllables.push(attachables[k]);
                 };
             };
@@ -312,7 +313,7 @@ export class Level
         {
             for (let i = 0; i < controllables.length; i++)
             {
-                promises.push(controllables[i].changeType(EntityTypes.Falling));
+                promises.push(controllables[i].changeType(EntityTypes.Falling, saveHistory));
             }
         }
 
@@ -322,14 +323,14 @@ export class Level
             const cell = this.getCellUnderEntity(fallables[i]);
             if (cell.hole)
             {
-                promises.push(fallables[i].changeType(EntityTypes.Falling));
+                promises.push(fallables[i].changeType(EntityTypes.Falling, saveHistory));
             }
         }
 
         if (!playerDied)
         {
             const cell = this.getCellUnderEntity(player);
-            const cakes = cell.entities.filter(e => e.type === EntityTypes.Victory);
+            const cakes = cell.entities.filter(e => e.type === EntityTypes.Victory, saveHistory);
 
             if (cakes.length > 0)
             {

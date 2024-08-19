@@ -4,14 +4,15 @@ import { Level } from "../level/Level";
 import { ActionManager } from "../input/ActionManager";
 
 const LEVELS = [
-	// "playground-level",
 	"tutorial",
+	"playground-level",
 	"a-hole-lot-to-learn",
 	"pushitive-learning",
 	"slice-of-life",
 	"cake-is-a-lie",
 	"three-pushes-with-twist",
 	"wholesome",
+	"hole-slicing",
 	"stairway-to-cake",
 	"delivery-service",
 	"so-close-so-far",
@@ -30,7 +31,7 @@ export class GameScene extends Scene
 
 	public actionManager!: ActionManager;
 
-	private _levelNumber: number = 0;
+	private _levelNumber: number = 1;
 	private get _levelName(): string { return LEVELS[this._levelNumber % LEVELS.length]; }
 
 	private _level!: Level;

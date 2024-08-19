@@ -221,6 +221,16 @@
    <property name="type" value="pit"/>
   </properties>
  </tile>
+ <tile id="61">
+  <properties>
+   <property name="type" value="pit"/>
+  </properties>
+ </tile>
+ <tile id="62">
+  <properties>
+   <property name="type" value="pit"/>
+  </properties>
+ </tile>
  <tile id="69">
   <properties>
    <property name="type" value="pit"/>
