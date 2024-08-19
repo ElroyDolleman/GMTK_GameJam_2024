@@ -128,7 +128,7 @@ export class ActionManager
         this.left.update();
         this.down.update();
         this.right.update();
-        this.next.update();
+        // this.next.update();
         this.reset.update();
         this.undo.update();
 

@@ -1,10 +1,11 @@
 {
   "name": "gmtk_gamejam_2024",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "main": "index.js",
   "scripts": {
     "buildAssets": "node scripts/build_assets.mjs",
-    "devServer": "node esbuild/dev-server.mjs"
+    "devServer": "node esbuild/dev-server.mjs",
+    "buildCode": "node esbuild/build-code.mjs"
   },
   "author": "Elroy Dolleman",
   "license": "ISC",
