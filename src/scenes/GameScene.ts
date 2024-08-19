@@ -35,6 +35,9 @@ export class GameScene extends Scene
 
 	private _level!: Level;
 
+	private get _isTutorial(): boolean { return this._levelNumber === 0; }
+	private _tutorialText?: Phaser.GameObjects.Text;
+
 	public constructor()
 	{
 		super({
@@ -47,7 +50,7 @@ export class GameScene extends Scene
 
 	public init(): void
 	{
-		console.log("init", this._levelNumber, this._levelName);
+		console.log("Level", this._levelNumber, this._levelName);
 	}
 
 	public preload(): void
@@ -60,8 +63,6 @@ export class GameScene extends Scene
 
 	public create(): void
 	{
-		console.log("create");
-
 		if (this.input.keyboard === null)
 		{
 			console.error("Keyboard disabled :C");
@@ -79,6 +80,28 @@ export class GameScene extends Scene
 		this._level.onLevelWon.addListener(this._handleVictory, this);
 		this.actionManager.onNextLevel.addListener(this._handleVictory, this);
 		this.actionManager.onLevelReset.addListener(this._handleReset, this);
+
+		if (this._isTutorial)
+		{
+			const tutorialText = this.add.text(320 / 2, 240, "Use the arrow keys to move", { align: "center" });
+			tutorialText.setOrigin(0.5, 0.5);
+
+			const explainReset = (step: number): void =>
+			{
+				if (step >= 5)
+				{
+					const text = "\nStuck?\nPress Z to go back in time";
+					tutorialText.setText(`${text}\n\n`);
+					this.actionManager.onStep.removeListener(explainReset, this);
+
+					setTimeout(() =>
+					{
+						tutorialText?.setText(`${text}\n\nOr press R to reset the level`);
+					}, 2000);
+				}
+			};
+			this.actionManager.onStep.addListener(explainReset, this);
+		}
 	}
 
 	public update(time: number, delta: number): void

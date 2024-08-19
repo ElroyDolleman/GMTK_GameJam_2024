@@ -36,6 +36,8 @@ export type StepHistory =
 
 export class ActionManager
 {
+    public readonly onStep: GameEvent<number> = new GameEvent();
+
     public static instance: ActionManager;
 
     public history: Record<number, StepHistory[] | undefined> = {};
@@ -179,6 +181,7 @@ export class ActionManager
         if (hasMoved)
         {
             this._actions.push(action);
+            this.onStep.trigger(this.stepCount);
             console.log("Step", this.stepCount);
         }
     }
