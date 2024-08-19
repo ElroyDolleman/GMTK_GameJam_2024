@@ -36,7 +36,6 @@ export class GameScene extends Scene
 	private _level!: Level;
 
 	private get _isTutorial(): boolean { return this._levelNumber === 0; }
-	private _tutorialText?: Phaser.GameObjects.Text;
 
 	public constructor()
 	{
@@ -55,8 +54,6 @@ export class GameScene extends Scene
 
 	public preload(): void
 	{
-		console.log("preload");
-
 		this.load.atlas("main", "assets/textures/main.png", "assets/textures/main.json");
 		LevelDataLoader.preloadFilesForLevel(this.load, this._levelName);
 	}
@@ -113,7 +110,14 @@ export class GameScene extends Scene
 	{
 		this._level.destroy();
 		this._levelNumber++;
-		this.scene.restart();
+		if (this._levelNumber < LEVELS.length)
+		{
+			this.scene.restart();
+		}
+		else
+		{
+			this.scene.switch("EndingScene");
+		}
 	}
 
 	private _handleReset(): void

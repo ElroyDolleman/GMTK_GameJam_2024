@@ -59,7 +59,7 @@ export class ActionManager
     public readonly undo: GameInput;
 
     private _actions: Action[] = [];
-    private _actionDuration: number = 180;
+    private _actionDuration: number = 160;
 
     private _currentActionPromise?: Promise<boolean>;
 
@@ -118,7 +118,7 @@ export class ActionManager
         this._actions.length = step;
 
         await Promise.all(promises);
-        console.log("Step Back", step);
+        // console.log("Step Back", step);
         return true;
     }
 
@@ -182,7 +182,7 @@ export class ActionManager
         {
             this._actions.push(action);
             this.onStep.trigger(this.stepCount);
-            console.log("Step", this.stepCount);
+            // console.log("Step", this.stepCount);
         }
     }
 

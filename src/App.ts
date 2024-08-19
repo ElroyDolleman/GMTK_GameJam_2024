@@ -1,5 +1,6 @@
 import { Game } from "phaser";
 import { GameScene } from "./scenes/GameScene";
+import { EndingScene } from "./scenes/EndingScene";
 
 export const game = new Game({
 	type: Phaser.AUTO,
@@ -11,5 +12,5 @@ export const game = new Game({
 	title: "GMTK Game Jam 2024",
 	version: "0.0.1",
 	disableContextMenu: true,
-	scene: [ GameScene ]
+	scene: [ GameScene, EndingScene ]
 });
