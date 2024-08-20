@@ -22,6 +22,7 @@ export class Level
 {
     public readonly onEntitiesMoved: GameEvent<void> = new GameEvent();
     public readonly onLevelWon: GameEvent<void> = new GameEvent();
+    public readonly onAnimationTick: GameEvent<void> = new GameEvent();
 
     public get cellWidth(): number { return this._levelData.tileWidth; }
     public get cellHeight(): number { return this._levelData.tileHeight; }
@@ -149,6 +150,17 @@ export class Level
 
         current.removeEntity(entity);
         next.addEntity(entity);
+    }
+
+    private _frames: number = 0;
+    public update(): void
+    {
+        this._frames++;
+        if (this._frames >= 24)
+        {
+            this._frames -= 24;
+            this.onAnimationTick.trigger();
+        }
     }
 
     public getEntityComponents(type: Constructor<IGridEntityComponent>): IGridEntityComponent[]
@@ -371,22 +383,27 @@ export class Level
             case "empty":
                 return new EmptyTile({
                     location: { row: gridX, column: gridY },
-                    sprite
+                    sprite,
+                    level: this
                 });
             case "solid":
                 return new SolidTile({
                     location: { row: gridX, column: gridY },
-                    sprite
+                    sprite,
+                    level: this
                 });
             case "spike":
                 return new SpikeTile({
                     location: { row: gridX, column: gridY },
-                    sprite
+                    sprite,
+                    level: this,
+                    animationFrames: [tileId, tileId + 1]
                 });
             case "pit":
                 return new PitTile({
                     location: { row: gridX, column: gridY },
-                    sprite
+                    sprite,
+                    level: this
                 });
         }
     }

@@ -2,6 +2,7 @@ import { GameObjects, Geom } from "phaser";
 import { IRectangle } from "../../geometry/IRectangle";
 import { IPoint } from "../../geometry/IPoint";
 import { GridEntity } from "../../entities/GridEntity";
+import { Level } from "../../level/Level";
 
 export type TileLocation =
 {
@@ -12,8 +13,10 @@ export type TileLocation =
 export type TileOptions =
 {
     location: TileLocation;
+    level: Level;
     hitbox?: IRectangle;
     sprite?: GameObjects.Sprite;
+    animationFrames?: number[]
 }
 
 export abstract class Tile
@@ -43,6 +46,17 @@ export abstract class Tile
 
         this.sprite = options.sprite;
         this.location = options.location;
+
+        if (options.animationFrames)
+        {
+            const frames = options.animationFrames;
+            let current = 0;
+            options.level.onAnimationTick.addListener(() =>
+            {
+                current++;
+                this.sprite!.setFrame(frames[current % frames.length]);
+            }, this);
+        }
     }
 
     public removeEntity(entity: GridEntity): void

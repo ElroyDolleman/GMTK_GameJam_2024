@@ -98,6 +98,7 @@ export class GameScene extends Scene
 	public update(time: number, delta: number): void
 	{
 		this.actionManager.update();
+		this._level.update();
 	}
 
 	private async _handleVictory(): Promise<void>
