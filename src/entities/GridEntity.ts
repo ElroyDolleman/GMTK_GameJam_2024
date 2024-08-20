@@ -10,6 +10,7 @@ import { Constructor } from "../utils/ConstructorGeneric";
 import { ActionManager } from "../input/ActionManager";
 import { PlayerSpriteComponent } from "./components/PlayerSpriteComponent";
 import { Tile } from "../grid/tiles/Tile";
+import { CakeSpriteComponent } from "./components/CakeSpriteComponent";
 
 export enum EntityTypes
 {
@@ -141,6 +142,10 @@ export class GridEntity implements ISceneObject, IComponentManager<IGridEntityCo
 		{
 			this.addComponent(new PlayerSpriteComponent());
 		}
+		if (this._type === EntityTypes.Victory)
+		{
+			this.addComponent(new CakeSpriteComponent());
+		}
 	}
 
 	public addComponent(component: IGridEntityComponent): void
@@ -166,6 +171,11 @@ export class GridEntity implements ISceneObject, IComponentManager<IGridEntityCo
 		{
 			this._components.splice(index, 1);
 		}
+	}
+
+	public handleLevelWon(): void
+	{
+		this._components.forEach(c => c.onLevelWon?.());
 	}
 
 	public move(amountX: number, amountY: number, duration: number, saveHistory: boolean = true): Promise<void>

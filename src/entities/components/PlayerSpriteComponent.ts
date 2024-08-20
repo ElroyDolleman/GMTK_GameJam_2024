@@ -1,5 +1,6 @@
 import { IPoint } from "../../geometry/IPoint";
 import { ActionManager } from "../../input/ActionManager";
+import { FadeObject } from "../../utils/FadeObject";
 import { EntityTypes, GridEntity } from "../GridEntity";
 import { IGridEntityComponent } from "./IGridEntityComponent";
 
@@ -42,6 +43,8 @@ export class PlayerSpriteComponent implements IGridEntityComponent
             // @TODO: Animate eating
             this.parent.sprite?.setFrame("player11");
             this._gotTheCake = true;
+
+            cakes.forEach(cake => FadeObject(this.parent.scene, cake.sprite ?? { alpha: 1 }, 150, 0));
             return;
         }
 

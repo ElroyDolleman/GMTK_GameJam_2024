@@ -335,6 +335,7 @@ export class Level
             if (cakes.length > 0)
             {
                 this.onLevelWon.trigger();
+                this._entities.forEach(e => e.handleLevelWon());
             }
         }
 

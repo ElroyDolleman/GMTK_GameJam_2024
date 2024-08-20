@@ -1,5 +1,6 @@
 import { GameObjects, Geom, Scene } from "phaser";
 import { CurrentLevelNumber, GetDisplayLevelName } from "../config/Levels";
+import { FadeObject } from "../utils/FadeObject";
 
 export type GameSceneOptions = {
 	levelNumber: number;
@@ -59,19 +60,6 @@ export class PreLevelScene extends Scene
 
     private _fadeText(to: number): Promise<void>
     {
-        return new Promise<void>(resolve =>
-        {
-            this.tweens.add({
-                targets: this._text,
-                props:
-                {
-                    alpha: { value: to, duration: 150 },
-                },
-                onComplete: () =>
-                {
-                    resolve();
-                }
-            });
-        });
+        return FadeObject(this, this._text, 150, to);
     }
 }

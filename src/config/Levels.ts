@@ -51,6 +51,6 @@ export const GetSpecialLevelData = (): SpecialLevelData =>
 {
     return {
         bgColor: 0xeafcff,
-        cakeNum: 1
+        cakeNum: 2
     };
 };

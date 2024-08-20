@@ -9,4 +9,5 @@ export interface IGridEntityComponent
 
     onMoveStart(direction: IPoint, saveHistory: boolean): void
     onMoveEnd(): void;
+    onLevelWon?(): void;
 }
