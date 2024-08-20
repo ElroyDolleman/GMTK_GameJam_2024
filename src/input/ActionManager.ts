@@ -36,13 +36,16 @@ export type StepHistory =
 
 export class ActionManager
 {
+    public disabled: boolean = false;
+
     public readonly onStep: GameEvent<number> = new GameEvent();
 
     public static instance: ActionManager;
 
-    public history: Record<number, StepHistory[] | undefined> = {};
-
     public get stepCount(): number { return this._actions.length; }
+    public get noInputs(): boolean { return this.up.isUp && this.down.isUp && this.left.isUp && this.right.isUp; }
+
+    public readonly history: Record<number, StepHistory[] | undefined> = {};
 
     public readonly onLevelReset: GameEvent<void> = new GameEvent();
     public readonly onNextLevel: GameEvent<void> = new GameEvent();
@@ -62,8 +65,6 @@ export class ActionManager
     private _actionDuration: number = 160;
 
     private _currentActionPromise?: Promise<boolean>;
-
-    private get _noInputs(): boolean { return this.up.isUp && this.down.isUp && this.left.isUp && this.right.isUp; }
 
     public constructor(options: ActionManagerOptions)
     {
@@ -124,6 +125,10 @@ export class ActionManager
 
     public update(): void
     {
+        if (this.disabled)
+        {
+            return;
+        }
         this.up.update();
         this.left.update();
         this.down.update();
@@ -152,7 +157,7 @@ export class ActionManager
             this._currentActionPromise.then(() => this._currentActionPromise = undefined);
             return;
         }
-        if (!this._noInputs)
+        if (!this.noInputs)
         {
             const step = this._getStepFromInputs();
             this.doAction({ step });

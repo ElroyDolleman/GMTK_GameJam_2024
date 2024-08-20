@@ -11,11 +11,11 @@ const LEVELS = [
 	"cake-is-a-lie",
 	"out-of-the-box",
 	"holesome",
-	"hole-slicing",
 	"stairway-to-cake",
 	"delivery-service",
 	"sweet-little-corner",
 	"a-slice-rotation",
+	"slice-with-care",
 	"fitting-in",
 	"dont-drop-the-cake",
 	"supply-chain",
@@ -109,6 +109,10 @@ export class GameScene extends Scene
 
 	private _handleVictory(): void
 	{
+		this.actionManager.disabled = true;
+
+		// TODO: Screen transition
+
 		this._level.destroy();
 		this._levelNumber++;
 		if (this._levelNumber < LEVELS.length)

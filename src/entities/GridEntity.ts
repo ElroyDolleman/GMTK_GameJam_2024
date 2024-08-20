@@ -8,6 +8,8 @@ import { IGridEntityComponent } from "./components/IGridEntityComponent";
 import { IComponentManager } from "../utils/IComponentManager";
 import { Constructor } from "../utils/ConstructorGeneric";
 import { ActionManager } from "../input/ActionManager";
+import { PlayerSpriteComponent } from "./components/PlayerSpriteComponent";
+import { Tile } from "../grid/tiles/Tile";
 
 export enum EntityTypes
 {
@@ -25,7 +27,7 @@ export type GridEntityOptions = {
 	hitbox: IRectangle;
 	location: IPoint;
 	scene: Scene;
-	grid: Grid<unknown>;
+	grid: Grid<Tile>;
 	debug?: boolean;
 	depth?: number;
 	sprite?: GameObjects.Sprite;
@@ -95,7 +97,7 @@ export class GridEntity implements ISceneObject, IComponentManager<IGridEntityCo
 	}
 
 	public readonly scene: Scene;
-	public readonly grid: Grid<unknown>;
+	public readonly grid: Grid<Tile>;
 	public readonly sprite?: GameObjects.Sprite;
 
 	public readonly isPlayer: boolean;
@@ -134,11 +136,17 @@ export class GridEntity implements ISceneObject, IComponentManager<IGridEntityCo
 			this._debugGraphics.depth = this.depth;
 			this._updateDebugGraphics();
 		}
+
+		if (options.isPlayer)
+		{
+			this.addComponent(new PlayerSpriteComponent());
+		}
 	}
 
 	public addComponent(component: IGridEntityComponent): void
 	{
 		component.attachToParent(this);
+		this._components.push(component);
 	}
 
 	public getComponent<K extends IGridEntityComponent>(type: Constructor<K>): K | undefined
@@ -192,6 +200,8 @@ export class GridEntity implements ISceneObject, IComponentManager<IGridEntityCo
 			}
 		}
 
+		this._components.forEach(c => c.onMoveStart({ x: amountX, y: amountY }, saveHistory));
+
 		return new Promise<void>(resolve =>
 		{
 			const tween = this.scene.tweens.add({
@@ -202,7 +212,11 @@ export class GridEntity implements ISceneObject, IComponentManager<IGridEntityCo
 					y: { value: destination.y }
 				},
 				onUpdate: () => this._onPositionUpdated(),
-				onComplete: () => resolve()
+				onComplete: () =>
+				{
+					resolve();
+					this._components.forEach(c => c.onMoveEnd());
+				}
 			});
 		});
 	}
