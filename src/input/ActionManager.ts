@@ -35,6 +35,12 @@ export type StepHistory =
     move?: EntityMove;
 }
 
+export class ActionStatistics
+{
+    public static amountOfAction: number = 0;
+    public static amountOfUndos: number = 0;
+}
+
 export class ActionManager
 {
     public disabled: boolean = false;
@@ -131,6 +137,8 @@ export class ActionManager
 
         await Promise.all(promises);
         // console.log("Step Back", step);
+
+        ActionStatistics.amountOfUndos++;
         return true;
     }
 
@@ -198,6 +206,8 @@ export class ActionManager
         {
             this._actions.push(action);
             this.onStep.trigger(this.stepCount);
+
+            ActionStatistics.amountOfAction++;
             // console.log("Step", this.stepCount);
         }
     }

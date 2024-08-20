@@ -5,6 +5,7 @@ import { ActionManager } from "../input/ActionManager";
 import { ScreenTransition } from "./ScreenTransition";
 import { CurrentLevelNumber, GetSpecialLevelData, LEVELS, NextLevel } from "../config/LevelsConfig";
 import { AudioManager } from "../audio/AudioManager";
+import { TimeManager } from "../utils/TimeManager";
 
 export type GameSceneOptions = {
 	levelNumber: number;
@@ -104,6 +105,8 @@ export class GameScene extends Scene
 	{
 		this.actionManager.update();
 		this._level.update();
+
+		TimeManager.update();
 	}
 
 	private async _handleVictory(): Promise<void>
