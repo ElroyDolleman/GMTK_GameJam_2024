@@ -10,7 +10,11 @@ export class PlayerSpriteComponent implements IGridEntityComponent
     public set isSad(value: boolean)
     {
         this._isSad = value;
-        this.parent.sprite?.setFrame(value ? "player6" : "player1");
+
+        if (!this._gotTheCake)
+        {
+            this.parent.sprite?.setFrame(value ? "player6" : "player1");
+        }
     }
     private _isSad: boolean = false;
 

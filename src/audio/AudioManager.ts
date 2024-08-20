@@ -7,6 +7,8 @@ const VOLUME_MAP: Record<string, number> = {
     "move1": 0.2,
     "move2": 0.2,
     "move3": 0.2,
+    "fuse": 0.2,
+    "push": 0.7,
 };
 
 const RATE_MAP: Record<string, number> = {
@@ -38,6 +40,8 @@ export class AudioManager
         scene.load.audio("move1", "assets/audio/move1.wav");
         scene.load.audio("move2", "assets/audio/move2.wav");
         scene.load.audio("move3", "assets/audio/move3.wav");
+        scene.load.audio("push", "assets/audio/push.wav");
+        scene.load.audio("fuse", "assets/audio/fuse.wav");
         scene.load.audio("background-music", "assets/audio/background-music.ogg");
     }
 
@@ -51,6 +55,8 @@ export class AudioManager
         this.sounds["move1"] = scene.sound.add("move1");
         this.sounds["move2"] = scene.sound.add("move2");
         this.sounds["move3"] = scene.sound.add("move3");
+        this.sounds["push"] = scene.sound.add("push");
+        this.sounds["fuse"] = scene.sound.add("fuse");
     }
 
     public static playRandomSound(keys: string[]): void

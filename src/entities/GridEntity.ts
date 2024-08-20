@@ -13,6 +13,7 @@ import { Tile } from "../grid/tiles/Tile";
 import { CakeSpriteComponent } from "./components/CakeSpriteComponent";
 import { SlicableComponent } from "./components/SlicableComponent";
 import { AudioManager } from "../audio/AudioManager";
+import { FuseComponent } from "./components/FuseComponent";
 
 export enum EntityTypes
 {
@@ -148,6 +149,10 @@ export class GridEntity implements ISceneObject, IComponentManager<IGridEntityCo
 		{
 			this.addComponent(new CakeSpriteComponent());
 		}
+		if (this._type === EntityTypes.Attachable)
+		{
+			this.addComponent(new FuseComponent());
+		}
 		if (this.isKillable)
 		{
 			this.addComponent(new SlicableComponent());
@@ -200,6 +205,10 @@ export class GridEntity implements ISceneObject, IComponentManager<IGridEntityCo
 		{
 			// Nope, it's annoying xD
 			// AudioManager.playRandomSound(["move1", "move3"]);
+		}
+		if (this._type === EntityTypes.Pushable)
+		{
+			AudioManager.playSound("push");
 		}
 
 		if (saveHistory)
@@ -270,6 +279,8 @@ export class GridEntity implements ISceneObject, IComponentManager<IGridEntityCo
 			this.sprite.alpha = 1;
 			this.sprite.setVisible(true);
 		}
+
+		this._components.forEach(c => c.onTypeChange?.(this._type, type));
 
 		switch (type)
 		{

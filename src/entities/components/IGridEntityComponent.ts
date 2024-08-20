@@ -1,5 +1,5 @@
 import { Input } from "phaser";
-import { GridEntity } from "../GridEntity";
+import { EntityTypes, GridEntity } from "../GridEntity";
 import { IPoint } from "../../geometry/IPoint";
 
 export interface IGridEntityComponent
@@ -11,4 +11,5 @@ export interface IGridEntityComponent
     onMoveEnd(): void;
     onLevelWon?(): void;
     onKill?(): Promise<void>;
+    onTypeChange?(from: EntityTypes, to: EntityTypes): void;
 }
