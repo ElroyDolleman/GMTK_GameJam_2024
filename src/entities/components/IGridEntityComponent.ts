@@ -11,5 +11,5 @@ export interface IGridEntityComponent
     onMoveEnd(): void;
     onLevelWon?(): void;
     onKill?(): Promise<void>;
-    onTypeChange?(from: EntityTypes, to: EntityTypes): void;
+    onTypeChange?(from: EntityTypes, to: EntityTypes, saveHistory: boolean): void;
 }

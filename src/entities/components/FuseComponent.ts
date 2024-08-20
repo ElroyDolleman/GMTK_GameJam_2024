@@ -4,9 +4,12 @@ import { EntityTypes, GridEntity } from "../GridEntity";
 import { IGridEntityComponent } from "./IGridEntityComponent";
 import { FadeObject } from "../../utils/FadeObject";
 import { AudioManager } from "../../audio/AudioManager";
+import { ActionManager } from "../../input/ActionManager";
 
 export class FuseComponent implements IGridEntityComponent
 {
+    private _changedBack: number = -1;
+
     public get parent(): GridEntity
     {
         if (this._parent === undefined) { throw "Not attached to parent"; }
@@ -32,10 +35,20 @@ export class FuseComponent implements IGridEntityComponent
     {
     }
 
-    public onTypeChange(from: EntityTypes, to: EntityTypes): void
+    public onTypeChange(from: EntityTypes, to: EntityTypes, saveHistory: boolean): void
     {
-        if (from === EntityTypes.Attachable && to === EntityTypes.Controllable)
+        if (from === EntityTypes.Controllable && to === EntityTypes.Attachable)
         {
+            this._changedBack = ActionManager.instance.stepCount;
+        }
+        if (saveHistory && from === EntityTypes.Attachable && to === EntityTypes.Controllable)
+        {
+            if (this._changedBack === ActionManager.instance.stepCount)
+            {
+                // We changed back and forth, no need to spam the feedback
+                return;
+            }
+
             AudioManager.playSound("fuse");
 
             if (this.parent.sprite)

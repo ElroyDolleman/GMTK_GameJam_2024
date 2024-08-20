@@ -280,7 +280,7 @@ export class GridEntity implements ISceneObject, IComponentManager<IGridEntityCo
 			this.sprite.setVisible(true);
 		}
 
-		this._components.forEach(c => c.onTypeChange?.(this._type, type));
+		this._components.forEach(c => c.onTypeChange?.(this._type, type, saveHistory));
 
 		switch (type)
 		{
