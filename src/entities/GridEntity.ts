@@ -1,7 +1,6 @@
 import { GameObjects, Geom, Scene } from "phaser";
 import { IPoint } from "../geometry/IPoint";
 import { IRectangle } from "../geometry/IRectangle";
-import { TimeUtils } from "../utils/TimeUtils";
 import { Grid } from "../grid/Grid";
 import { ISceneObject } from "./ISceneObject";
 import { IGridEntityComponent } from "./components/IGridEntityComponent";
@@ -66,16 +65,6 @@ export class GridEntity implements ISceneObject, IComponentManager<IGridEntityCo
 		return new Geom.Rectangle(
 			this.x + this._localHitbox.x,
 			this.y + this._localHitbox.y,
-			this._localHitbox.width,
-			this._localHitbox.height
-		);
-	}
-
-	public get nextHitbox(): Phaser.Geom.Rectangle
-	{
-		return new Geom.Rectangle(
-			this.x + this._localHitbox.x + this.speed.x * TimeUtils.elapsedSeconds,
-			this.y + this._localHitbox.y + this.speed.y * TimeUtils.elapsedSeconds,
 			this._localHitbox.width,
 			this._localHitbox.height
 		);

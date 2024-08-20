@@ -11,7 +11,7 @@ export const game = new Game({
 	zoom: 2,
 	backgroundColor: "#00000",
 	title: "GMTK Game Jam 2024",
-	version: "0.0.1",
+	version: "0.1.3",
 	disableContextMenu: true,
 	scene: [ PreLevelScene, GameScene, EndingScene ]
 });
