@@ -11,6 +11,7 @@ import { ActionManager } from "../input/ActionManager";
 import { PlayerSpriteComponent } from "./components/PlayerSpriteComponent";
 import { Tile } from "../grid/tiles/Tile";
 import { CakeSpriteComponent } from "./components/CakeSpriteComponent";
+import { SlicableComponent } from "./components/SlicableComponent";
 
 export enum EntityTypes
 {
@@ -146,6 +147,10 @@ export class GridEntity implements ISceneObject, IComponentManager<IGridEntityCo
 		{
 			this.addComponent(new CakeSpriteComponent());
 		}
+		if (this.isKillable)
+		{
+			this.addComponent(new SlicableComponent());
+		}
 	}
 
 	public addComponent(component: IGridEntityComponent): void
@@ -255,6 +260,7 @@ export class GridEntity implements ISceneObject, IComponentManager<IGridEntityCo
 
 		if (type !== EntityTypes.Falling && type !== EntityTypes.Killed && this.sprite && !this.sprite.visible)
 		{
+			this.sprite.alpha = 1;
 			this.sprite.setVisible(true);
 		}
 
@@ -264,6 +270,7 @@ export class GridEntity implements ISceneObject, IComponentManager<IGridEntityCo
 				await this._fall();
 				break;
 			case EntityTypes.Killed:
+				// We cannot await it because the type change is expected earlier for some reason
 				this._kill();
 				break;
 		}
@@ -271,9 +278,21 @@ export class GridEntity implements ISceneObject, IComponentManager<IGridEntityCo
 		this._type = type;
 	}
 
-	protected _kill(): void
+	protected async _kill(): Promise<void>
 	{
-		this.sprite?.setVisible(false);
+		for (let i = 0; i < this._components.length; i++)
+		{
+			await this._components[i].onKill?.();
+		}
+		if (!this.sprite)
+		{
+			return;
+		}
+		if (this._type === EntityTypes.Killed)
+		{
+			this.sprite.setVisible(false);
+		}
+		this.sprite.alpha = 1;
 	}
 
 	protected _fall(): Promise<void>
@@ -293,6 +312,7 @@ export class GridEntity implements ISceneObject, IComponentManager<IGridEntityCo
 			const tween = this.scene.tweens.add({
 				targets: sprite,
 				duration: 500,
+				ease: Phaser.Math.Easing.Sine.In,
 				props: {
 					scale: 0,
 				},

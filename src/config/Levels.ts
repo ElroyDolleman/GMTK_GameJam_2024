@@ -1,4 +1,6 @@
 export const LEVELS = [
+    "slice-of-life",
+
 	"sticky-situation",
 	"a-hole-lot-to-learn",
 	"pushitive-learning",

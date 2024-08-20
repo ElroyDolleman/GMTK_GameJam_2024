@@ -3,8 +3,9 @@ import { GetSpecialLevelData } from "../../config/Levels";
 import { IPoint } from "../../geometry/IPoint";
 import { EntityTypes, GridEntity } from "../GridEntity";
 import { IGridEntityComponent } from "./IGridEntityComponent";
+import { FadeObject } from "../../utils/FadeObject";
 
-export class CakeSpriteComponent implements IGridEntityComponent
+export class SlicableComponent implements IGridEntityComponent
 {
     public particles!: GameObjects.Particles.ParticleEmitter;
 
@@ -23,19 +24,16 @@ export class CakeSpriteComponent implements IGridEntityComponent
     public attachToParent(parent: GridEntity): void
     {
         this._parent = parent;
-        const data = GetSpecialLevelData();
-        this._parent.sprite?.setFrame(`cake${data.cakeNum}`);
 
         this.particles = this._parent.scene.add.particles(
             0,
             0,
             "main",
             {
-                frame: { frames: [ "player1", "player2", "player3"], cycle: true },
+                frame: "attachable",
                 lifespan: 500,
-                speed: { min: 150, max: 250 },
+                speed: { min: 50, max: 75 },
                 scale: { start: 0.8, end: 0 },
-                blendMode: "ADD",
                 emitting: false,
             }
         );
@@ -49,9 +47,16 @@ export class CakeSpriteComponent implements IGridEntityComponent
     {
     }
 
-    public onLevelWon(): void
+    public async onKill(): Promise<void>
     {
         const pos = this.parent.worldPosition;
-        this.particles.explode(10, pos.x, pos.y);
+        this.particles.explode(10, pos.x + 8, pos.y + 8);
+
+        if (!this.parent.sprite)
+        {
+            return;
+        }
+
+        await FadeObject(this.parent.scene, this.parent.sprite, 150, 0);
     }
 }
