@@ -28,24 +28,24 @@ export class PlayerSpriteComponent implements IGridEntityComponent
     public onMoveStart(direction: IPoint, saveHistory: boolean): void
     {
         // Is false when we rewind
-        if (!saveHistory)
-        {
-            direction.x *= -1;
-            direction.y *= -1;
-        }
-
         const location = this.parent.gridLocation;
 		const gridDestination = { x: location.x + direction.x, y: location.y + direction.y };
         const destCell = this.parent.grid.getCell(gridDestination.x, gridDestination.y);
         const cakes = destCell.entities.filter(e => e.type === EntityTypes.Victory);
         if (cakes.length > 0)
         {
-            // @TODO: Animate eating
             this.parent.sprite?.setFrame("player11");
             this._gotTheCake = true;
 
             cakes.forEach(cake => FadeObject(this.parent.scene, cake.sprite ?? { alpha: 1 }, 150, 0));
             return;
+        }
+
+        if (!saveHistory)
+        {
+            // Facing direction is in reverse when going back in time
+            direction.x *= -1;
+            direction.y *= -1;
         }
 
         let frameNum: number = 1;
