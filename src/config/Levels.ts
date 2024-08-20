@@ -1,6 +1,4 @@
 export const LEVELS = [
-    "slice-of-life",
-
 	"sticky-situation",
 	"a-hole-lot-to-learn",
 	"pushitive-learning",
@@ -18,7 +16,7 @@ export const LEVELS = [
 	"supply-chain",
 ];
 
-export let CurrentLevelNumber: number = 0;
+export let CurrentLevelNumber: number = 12;
 
 export const NextLevel = (): void =>
 {
@@ -51,8 +49,22 @@ export type SpecialLevelData =
 
 export const GetSpecialLevelData = (): SpecialLevelData =>
 {
+    if (CurrentLevelNumber < 7)
+    {
+        return {
+            bgColor: 0xeafcff,
+            cakeNum: 1
+        };
+    }
+    if (CurrentLevelNumber < 12)
+    {
+        return {
+            bgColor: 0xa7a2a0,
+            cakeNum: 2
+        };
+    }
     return {
-        bgColor: 0xeafcff,
-        cakeNum: 2
+        bgColor: 0xaaccd3,
+        cakeNum: 3
     };
 };
