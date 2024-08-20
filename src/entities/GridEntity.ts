@@ -196,6 +196,12 @@ export class GridEntity implements ISceneObject, IComponentManager<IGridEntityCo
 			return Promise.resolve();
 		}
 
+		if (this.isPlayer)
+		{
+			// Nope, it's annoying xD
+			// AudioManager.playRandomSound(["move1", "move3"]);
+		}
+
 		if (saveHistory)
 		{
 			const step = ActionManager.instance.stepCount;

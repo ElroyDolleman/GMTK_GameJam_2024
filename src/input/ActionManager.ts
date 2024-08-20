@@ -4,6 +4,7 @@ import { GridStep, Level } from "../level/Level";
 import { GameEvent } from "../utils/GameEvent";
 import { GameInput } from "./GameInput";
 import { EntityTypes, GridEntity } from "../entities/GridEntity";
+import { PlayerSpriteComponent } from "../entities/components/PlayerSpriteComponent";
 
 export type Action =
 {
@@ -111,6 +112,16 @@ export class ActionManager
             }
             if (data.typeChange)
             {
+                if (data.typeChange.from === EntityTypes.Victory)
+                {
+                    const player = this.level.entities.find(e => e.isPlayer);
+                    const compnent = player?.getComponent(PlayerSpriteComponent);
+                    if (compnent)
+                    {
+                        // The cake is back :D
+                        compnent.isSad = false;
+                    }
+                }
                 data.entity.changeType(data.typeChange.from, false);
             }
         }

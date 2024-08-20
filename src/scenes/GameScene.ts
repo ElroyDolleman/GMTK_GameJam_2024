@@ -3,7 +3,7 @@ import { LevelDataLoader } from "../level/LevelDataLoader";
 import { Level } from "../level/Level";
 import { ActionManager } from "../input/ActionManager";
 import { ScreenTransition } from "./ScreenTransition";
-import { CurrentLevelNumber, GetSpecialLevelData, LEVELS, NextLevel } from "../config/Levels";
+import { CurrentLevelNumber, GetSpecialLevelData, LEVELS, NextLevel } from "../config/LevelsConfig";
 import { AudioManager } from "../audio/AudioManager";
 
 export type GameSceneOptions = {
@@ -35,7 +35,7 @@ export class GameScene extends Scene
 
 	public init(): void
 	{
-		console.log("Level", CurrentLevelNumber, this._levelName);
+		// console.log("Level", CurrentLevelNumber, this._levelName);
 	}
 
 	public preload(): void
@@ -86,14 +86,14 @@ export class GameScene extends Scene
 			{
 				if (step >= 5)
 				{
-					const text = "\nStuck?\nPress Z to go back in time";
+					const text = "\nStuck?\nPress Z to rewind";
 					this._tutorialText?.setText(`${text}\n\n`);
 					this.actionManager.onStep.removeListener(explainReset, this);
 
 					setTimeout(() =>
 					{
-						this._tutorialText?.setText(`${text}\n\nOr press R to reset the level`);
-					}, 2000);
+						this._tutorialText?.setText(`${text}\n\nOr press R to restart the level`);
+					}, 2500);
 				}
 			};
 			this.actionManager.onStep.addListener(explainReset, this);
@@ -126,8 +126,13 @@ export class GameScene extends Scene
 		}
 	}
 
-	private _handleReset(): void
+	private async _handleReset(): Promise<void>
 	{
+		this._tutorialText = undefined;
+		this.actionManager.disabled = true;
+
+		await this._screenTransition.transitionOut();
+
 		this._level.destroy();
 		this.scene.restart();
 	}

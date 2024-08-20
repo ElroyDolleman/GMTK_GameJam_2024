@@ -1,5 +1,5 @@
 import { GameObjects } from "phaser";
-import { GetSpecialLevelData } from "../../config/Levels";
+import { GetSpecialLevelData } from "../../config/LevelsConfig";
 import { IPoint } from "../../geometry/IPoint";
 import { EntityTypes, GridEntity } from "../GridEntity";
 import { IGridEntityComponent } from "./IGridEntityComponent";

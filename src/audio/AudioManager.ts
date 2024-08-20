@@ -3,7 +3,10 @@ const VOLUME_MAP: Record<string, number> = {
     "slime-sqaush2": 0.5,
     "slime-sqaush3": 0.35,
     "falling": 0.32,
-    "win": 0.32,
+    "win": 0.31,
+    "move1": 0.2,
+    "move2": 0.2,
+    "move3": 0.2,
 };
 
 const RATE_MAP: Record<string, number> = {
@@ -32,6 +35,9 @@ export class AudioManager
         scene.load.audio("slime-sqaush3", "assets/audio/slime-sqaush3.wav");
         scene.load.audio("falling", "assets/audio/falling.wav");
         scene.load.audio("win", "assets/audio/win.wav");
+        scene.load.audio("move1", "assets/audio/move1.wav");
+        scene.load.audio("move2", "assets/audio/move2.wav");
+        scene.load.audio("move3", "assets/audio/move3.wav");
         scene.load.audio("background-music", "assets/audio/background-music.ogg");
     }
 
@@ -42,6 +48,9 @@ export class AudioManager
         this.sounds["slime-sqaush3"] = scene.sound.add("slime-sqaush3");
         this.sounds["falling"] = scene.sound.add("falling");
         this.sounds["win"] = scene.sound.add("win");
+        this.sounds["move1"] = scene.sound.add("move1");
+        this.sounds["move2"] = scene.sound.add("move2");
+        this.sounds["move3"] = scene.sound.add("move3");
     }
 
     public static playRandomSound(keys: string[]): void
@@ -82,7 +91,7 @@ export class AudioManager
     {
         const music = scene.sound.add("background-music", {
             mute: false,
-            volume: 0.13,
+            volume: 0.15,
             rate: 1,
             detune: 0,
             seek: 0,

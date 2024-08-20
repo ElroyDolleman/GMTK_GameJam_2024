@@ -1,5 +1,5 @@
 import { GameObjects, Geom, Scene } from "phaser";
-import { CurrentLevelNumber, GetDisplayLevelName } from "../config/Levels";
+import { CurrentLevelNumber, GetDisplayLevelName } from "../config/LevelsConfig";
 import { FadeObject } from "../utils/FadeObject";
 import { AudioManager } from "../audio/AudioManager";
 

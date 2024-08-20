@@ -12,6 +12,7 @@ import { GameEvent } from "../utils/GameEvent";
 import { SpikeTile } from "../grid/tiles/SpikeTile";
 import { PitTile } from "../grid/tiles/PitTile";
 import { AudioManager } from "../audio/AudioManager";
+import { PlayerSpriteComponent } from "../entities/components/PlayerSpriteComponent";
 
 export type GridStep =
 {
@@ -31,7 +32,7 @@ export class Level
     public readonly scene: Scene;
 
     private _grids: Grid<Tile>[] = [];
-    private _entities: GridEntity[] = [];
+    public entities: GridEntity[] = [];
 
     private _levelData: LevelData;
 
@@ -58,12 +59,12 @@ export class Level
 
     public async inputMove(step: GridStep, duration: number): Promise<boolean>
     {
-        return this.moveEntities(this._entities.filter(e => e.type === EntityTypes.Controllable), step, duration);
+        return this.moveEntities(this.entities.filter(e => e.type === EntityTypes.Controllable), step, duration);
     }
 
     public async moveEntities(entities: GridEntity[], step: GridStep, duration: number): Promise<boolean>
     {
-        const player = this._entities.find(e => e.isPlayer);
+        const player = this.entities.find(e => e.isPlayer);
         if (player === undefined || player.type !== EntityTypes.Controllable)
         {
             return false;
@@ -167,16 +168,16 @@ export class Level
     public getEntityComponents(type: Constructor<IGridEntityComponent>): IGridEntityComponent[]
     {
         const components: IGridEntityComponent[] = [];
-        for (let i = 0; i < this._entities.length; i++)
+        for (let i = 0; i < this.entities.length; i++)
         {
-            components.push(...this._entities[i].getComponents(type));
+            components.push(...this.entities[i].getComponents(type));
         }
         return components;
     }
 
     public addEntity(entity: GridEntity): void
     {
-        this._entities.push(entity);
+        this.entities.push(entity);
         const grid = this.getGrid(entity.depth);
         const location = entity.gridLocation;
         const cell = grid.getCell(location.x, location.y);
@@ -257,7 +258,7 @@ export class Level
         const promises: Promise<unknown>[] = [];
 
         let recheckAttachments = false;
-        const killables = this._entities.filter(e => e.isKillable);
+        const killables = this.entities.filter(e => e.isKillable);
         for (let i = 0; i < killables.length; i++)
         {
             const cell = this.getCellUnderEntity(killables[i]);
@@ -268,7 +269,7 @@ export class Level
             }
         }
 
-        const controllables = this._entities.filter(e => e.type === EntityTypes.Controllable);
+        const controllables = this.entities.filter(e => e.type === EntityTypes.Controllable);
         const player = controllables.find(e => e.isPlayer);
         const playerDied = player === undefined;
 
@@ -330,26 +331,38 @@ export class Level
             }
         }
 
-        const fallables = this._entities.filter(e => e.fallable);
+        let cakeFell = false;
+        const fallables = this.entities.filter(e => e.fallable);
         for (let i = 0; i < fallables.length; i++)
         {
             const cell = this.getCellUnderEntity(fallables[i]);
             if (cell.hole)
             {
                 promises.push(fallables[i].changeType(EntityTypes.Falling, saveHistory));
+                if (fallables[i].type === EntityTypes.Victory)
+                {
+                    cakeFell = true;
+                }
             }
         }
+        const cakeIsAlive = cakeFell || this.entities.find(e => e.type === EntityTypes.Victory) === undefined;
 
         if (!playerDied)
         {
-            const cell = this.getCellUnderEntity(player);
-            const cakes = cell.entities.filter(e => e.type === EntityTypes.Victory, saveHistory);
+            const component = player.getComponent(PlayerSpriteComponent)!;
+            component.isSad = cakeIsAlive;
 
-            if (cakes.length > 0)
+            if (!cakeFell)
             {
-                this.onLevelWon.trigger();
-                this._entities.forEach(e => e.handleLevelWon());
-                AudioManager.playSound("win");
+                const cell = this.getCellUnderEntity(player);
+                const cakes = cell.entities.filter(e => e.type === EntityTypes.Victory, saveHistory);
+
+                if (cakes.length > 0)
+                {
+                    this.onLevelWon.trigger();
+                    this.entities.forEach(e => e.handleLevelWon());
+                    AudioManager.playSound("win");
+                }
             }
         }
 

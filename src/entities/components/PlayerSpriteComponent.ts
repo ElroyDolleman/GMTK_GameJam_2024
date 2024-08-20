@@ -6,6 +6,14 @@ import { IGridEntityComponent } from "./IGridEntityComponent";
 
 export class PlayerSpriteComponent implements IGridEntityComponent
 {
+    public get isSad(): boolean { return this._isSad; }
+    public set isSad(value: boolean)
+    {
+        this._isSad = value;
+        this.parent.sprite?.setFrame(value ? "player6" : "player1");
+    }
+    private _isSad: boolean = false;
+
     private _gotTheCake: boolean = false;
 
     public get parent(): GridEntity
@@ -64,6 +72,10 @@ export class PlayerSpriteComponent implements IGridEntityComponent
                 frameNum = 2;
                 break;
         }
+        if (this.isSad)
+        {
+            frameNum += 5;
+        }
         this.parent.sprite?.setFrame("player" + frameNum);
     }
 
@@ -71,7 +83,7 @@ export class PlayerSpriteComponent implements IGridEntityComponent
     {
         if (!this._gotTheCake)
         {
-            this.parent.sprite?.setFrame("player1");
+            this.parent.sprite?.setFrame(this.isSad ? "player6" : "player1");
         }
     }
 }
