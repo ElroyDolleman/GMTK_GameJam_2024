@@ -1,6 +1,7 @@
 import { GameObjects, Geom, Scene } from "phaser";
 import { CurrentLevelNumber, GetDisplayLevelName } from "../config/Levels";
 import { FadeObject } from "../utils/FadeObject";
+import { AudioManager } from "../audio/AudioManager";
 
 export type GameSceneOptions = {
 	levelNumber: number;
@@ -28,6 +29,7 @@ export class PreLevelScene extends Scene
 
 	public preload(): void
 	{
+        AudioManager.preload(this);
 	}
 
 	public create(): void
@@ -40,7 +42,14 @@ export class PreLevelScene extends Scene
         this._text.alpha = 0;
         this._fadeText(1);
 
+        AudioManager.createAllSounds(this);
+
         this._ticks = 0;
+
+        if (CurrentLevelNumber === 0)
+        {
+            AudioManager.playMusic(this);
+        }
 	}
 
 	public update(time: number, delta: number): void

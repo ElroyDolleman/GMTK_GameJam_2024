@@ -11,6 +11,7 @@ import { SolidTile } from "../grid/tiles/SolidTile";
 import { GameEvent } from "../utils/GameEvent";
 import { SpikeTile } from "../grid/tiles/SpikeTile";
 import { PitTile } from "../grid/tiles/PitTile";
+import { AudioManager } from "../audio/AudioManager";
 
 export type GridStep =
 {
@@ -348,6 +349,7 @@ export class Level
             {
                 this.onLevelWon.trigger();
                 this._entities.forEach(e => e.handleLevelWon());
+                AudioManager.playSound("win");
             }
         }
 

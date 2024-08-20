@@ -4,6 +4,7 @@ import { Level } from "../level/Level";
 import { ActionManager } from "../input/ActionManager";
 import { ScreenTransition } from "./ScreenTransition";
 import { CurrentLevelNumber, GetSpecialLevelData, LEVELS, NextLevel } from "../config/Levels";
+import { AudioManager } from "../audio/AudioManager";
 
 export type GameSceneOptions = {
 	levelNumber: number;
@@ -41,6 +42,8 @@ export class GameScene extends Scene
 	{
 		this.load.atlas("main", "assets/textures/main.png", "assets/textures/main.json");
 		LevelDataLoader.preloadFilesForLevel(this.load, this._levelName);
+
+		AudioManager.preload(this);
 	}
 
 	public create(): void
@@ -50,6 +53,8 @@ export class GameScene extends Scene
 			console.error("Keyboard disabled :C");
 			return;
 		}
+
+		AudioManager.createAllSounds(this);
 
 		const spData = GetSpecialLevelData();
 		const background = this.add.graphics({ fillStyle: { color: spData.bgColor } });

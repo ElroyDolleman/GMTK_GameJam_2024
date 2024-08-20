@@ -12,6 +12,7 @@ import { PlayerSpriteComponent } from "./components/PlayerSpriteComponent";
 import { Tile } from "../grid/tiles/Tile";
 import { CakeSpriteComponent } from "./components/CakeSpriteComponent";
 import { SlicableComponent } from "./components/SlicableComponent";
+import { AudioManager } from "../audio/AudioManager";
 
 export enum EntityTypes
 {
@@ -284,6 +285,7 @@ export class GridEntity implements ISceneObject, IComponentManager<IGridEntityCo
 		{
 			await this._components[i].onKill?.();
 		}
+		AudioManager.playRandomSound(["slime-sqaush1", "slime-sqaush2", "slime-sqaush3"]);
 		if (!this.sprite)
 		{
 			return;
@@ -308,6 +310,8 @@ export class GridEntity implements ISceneObject, IComponentManager<IGridEntityCo
 			sprite.x += sprite.width / 2;
 			sprite.y += sprite.height / 2;
 			sprite.setOrigin(0.5, 0.5);
+
+			AudioManager.playSound("falling");
 
 			const tween = this.scene.tweens.add({
 				targets: sprite,

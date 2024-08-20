@@ -16,7 +16,7 @@ export const LEVELS = [
 	"supply-chain",
 ];
 
-export let CurrentLevelNumber: number = 9;
+export let CurrentLevelNumber: number = 0;
 
 export const NextLevel = (): void =>
 {
