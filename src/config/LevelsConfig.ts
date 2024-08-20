@@ -17,7 +17,7 @@ export const LEVELS = [
     "cut-me-out-of-here",
 ];
 
-export let CurrentLevelNumber: number = 1;
+export let CurrentLevelNumber: number = 0;
 
 export const NextLevel = (): void =>
 {

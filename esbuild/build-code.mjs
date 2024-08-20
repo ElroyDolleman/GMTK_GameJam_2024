@@ -5,7 +5,7 @@ await esbuild.build({
     bundle: true,
       entryPoints: ["src/App.ts"],
       outfile: "dist/index.js",
-      // minify: true,
+      minify: true,
       plugins: [
         copy({
           // this is equal to process.cwd(), which means we use cwd path as base path to resolve `to` path

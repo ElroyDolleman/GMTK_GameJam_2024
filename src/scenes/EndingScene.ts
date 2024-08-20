@@ -37,7 +37,7 @@ export class EndingScene extends Scene
 		const milliseconds = Math.round(timeMS % 1000);
 		const timeText = `${minutes}m ${seconds}s ${milliseconds}ms`;
 
-        const text = this.add.text(320 / 2, 320 / 2, `Thanks for playing :3\n\nMoves Done: ${ActionStatistics.amountOfAction.toLocaleString()}\n\n${timeText}`, { align: "center" });
+        const text = this.add.text(320 / 2, 320 / 2, `Thanks for playing :3\n\n\nMoves Done: ${ActionStatistics.amountOfAction.toLocaleString()}\n\n${timeText}`, { align: "center" });
         text.setOrigin(0.5, 0.5);
 	}
 
