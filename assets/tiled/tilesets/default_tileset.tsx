@@ -271,6 +271,11 @@
    <property name="type" value="pit"/>
   </properties>
  </tile>
+ <tile id="77">
+  <properties>
+   <property name="type" value="pit"/>
+  </properties>
+ </tile>
  <wangsets>
   <wangset name="walls" type="corner" tile="-1">
    <wangcolor name="" color="#ff0000" tile="-1" probability="1"/>

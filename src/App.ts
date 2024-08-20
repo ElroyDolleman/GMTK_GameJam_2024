@@ -9,9 +9,13 @@ export const game = new Game({
 	height: 320,
 	pixelArt: true,
 	zoom: 2,
-	backgroundColor: "#00000",
+	backgroundColor: "#0x0",
 	title: "GMTK Game Jam 2024",
 	version: "0.1.3",
 	disableContextMenu: true,
-	scene: [ PreLevelScene, GameScene, EndingScene ]
+	scene: [ PreLevelScene, GameScene, EndingScene ],
+	fps: {
+        target: 60,
+        min: 60,
+    },
 });
