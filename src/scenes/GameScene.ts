@@ -2,24 +2,8 @@ import { Scene } from "phaser";
 import { LevelDataLoader } from "../level/LevelDataLoader";
 import { Level } from "../level/Level";
 import { ActionManager } from "../input/ActionManager";
-
-const LEVELS = [
-	"sticky-situation",
-	"a-hole-lot-to-learn",
-	"pushitive-learning",
-	"slice-of-life",
-	"cake-is-a-lie",
-	"out-of-the-box",
-	"holesome",
-	"stairway-to-cake",
-	"delivery-service",
-	"sweet-little-corner",
-	"a-slice-rotation",
-	"slice-with-care",
-	"fitting-in",
-	"dont-drop-the-cake",
-	"supply-chain",
-];
+import { ScreenTransition } from "./ScreenTransition";
+import { CurrentLevelNumber, GetSpecialLevelData, LEVELS, NextLevel } from "../config/Levels";
 
 export type GameSceneOptions = {
 	levelNumber: number;
@@ -27,21 +11,21 @@ export type GameSceneOptions = {
 
 export class GameScene extends Scene
 {
-	public static key = "GameScene";
-
 	public actionManager!: ActionManager;
+	private _tutorialText?: Phaser.GameObjects.Text;
 
-	private _levelNumber: number = 0;
-	private get _levelName(): string { return LEVELS[this._levelNumber % LEVELS.length]; }
+	private get _levelName(): string { return LEVELS[CurrentLevelNumber % LEVELS.length]; }
 
 	private _level!: Level;
 
-	private get _isTutorial(): boolean { return this._levelNumber === 0; }
+	private get _isTutorial(): boolean { return CurrentLevelNumber === 0; }
+
+	private _screenTransition!: ScreenTransition;
 
 	public constructor()
 	{
 		super({
-			key: GameScene.key,
+			key: "GameScene",
 			pack: {
 				files: []
 			}
@@ -50,7 +34,7 @@ export class GameScene extends Scene
 
 	public init(): void
 	{
-		console.log("Level", this._levelNumber, this._levelName);
+		console.log("Level", CurrentLevelNumber, this._levelName);
 	}
 
 	public preload(): void
@@ -67,6 +51,12 @@ export class GameScene extends Scene
 			return;
 		}
 
+		const spData = GetSpecialLevelData();
+		const background = this.add.graphics({ fillStyle: { color: spData.bgColor } });
+		background.fillRect(0, 0, 320, 320);
+
+		this._screenTransition = new ScreenTransition(this);
+
 		const levelData = LevelDataLoader.getLevelData(this.cache, this._levelName);
 		this._level = new Level(this, levelData);
 
@@ -74,6 +64,9 @@ export class GameScene extends Scene
 			keyboard: this.input.keyboard,
 			level: this._level
 		});
+		this.actionManager.disabled = true;
+
+		this._screenTransition.transitionIn().then(() => this.actionManager.disabled = false);
 
 		this._level.onLevelWon.addListener(this._handleVictory, this);
 		this.actionManager.onNextLevel.addListener(this._handleVictory, this);
@@ -81,20 +74,20 @@ export class GameScene extends Scene
 
 		if (this._isTutorial)
 		{
-			const tutorialText = this.add.text(320 / 2, 240, "Use the arrow keys to move", { align: "center" });
-			tutorialText.setOrigin(0.5, 0.5);
+			this._tutorialText = this.add.text(320 / 2, 240, "Use the arrow keys to move", { align: "center" });
+			this._tutorialText.setOrigin(0.5, 0.5);
 
 			const explainReset = (step: number): void =>
 			{
 				if (step >= 5)
 				{
 					const text = "\nStuck?\nPress Z to go back in time";
-					tutorialText.setText(`${text}\n\n`);
+					this._tutorialText?.setText(`${text}\n\n`);
 					this.actionManager.onStep.removeListener(explainReset, this);
 
 					setTimeout(() =>
 					{
-						tutorialText?.setText(`${text}\n\nOr press R to reset the level`);
+						this._tutorialText?.setText(`${text}\n\nOr press R to reset the level`);
 					}, 2000);
 				}
 			};
@@ -107,17 +100,19 @@ export class GameScene extends Scene
 		this.actionManager.update();
 	}
 
-	private _handleVictory(): void
+	private async _handleVictory(): Promise<void>
 	{
+		this._tutorialText = undefined;
 		this.actionManager.disabled = true;
 
-		// TODO: Screen transition
+		await this._screenTransition.transitionOut();
 
 		this._level.destroy();
-		this._levelNumber++;
-		if (this._levelNumber < LEVELS.length)
+		NextLevel();
+		if (CurrentLevelNumber < LEVELS.length)
 		{
-			this.scene.restart();
+			this.scene.switch("PreLevelScene");
+			this.scene.stop(this);
 		}
 		else
 		{

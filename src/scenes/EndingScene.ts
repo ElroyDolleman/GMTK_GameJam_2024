@@ -1,24 +1,4 @@
 import { Geom, Scene } from "phaser";
-import { LevelDataLoader } from "../level/LevelDataLoader";
-import { Level } from "../level/Level";
-import { ActionManager } from "../input/ActionManager";
-
-const LEVELS = [
-	// "playground-level",
-	"tutorial",
-	"a-hole-lot-to-learn",
-	"pushitive-learning",
-	"slice-of-life",
-	"cake-is-a-lie",
-	"three-pushes-with-twist",
-	"wholesome",
-	"stairway-to-cake",
-	"delivery-service",
-	"so-close-so-far",
-	"a-slice-rotation",
-	"fitting-in",
-	"small-alley",
-];
 
 export type GameSceneOptions = {
 	levelNumber: number;
@@ -26,12 +6,10 @@ export type GameSceneOptions = {
 
 export class EndingScene extends Scene
 {
-	public static key = "EndingScene";
-
 	public constructor()
 	{
 		super({
-			key: EndingScene.key,
+			key: "EndingScene",
 			pack: {
 				files: []
 			}
