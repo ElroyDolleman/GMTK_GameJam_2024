@@ -5,6 +5,7 @@ import { GameEvent } from "../utils/GameEvent";
 import { GameInput } from "./GameInput";
 import { EntityTypes, GridEntity } from "../entities/GridEntity";
 import { PlayerSpriteComponent } from "../entities/components/PlayerSpriteComponent";
+import { IInputs } from "./IInputs";
 
 export type Action =
 {
@@ -41,7 +42,7 @@ export class ActionStatistics
     public static amountOfUndos: number = 0;
 }
 
-export class ActionManager
+export class ActionManager implements IInputs
 {
     public disabled: boolean = false;
 

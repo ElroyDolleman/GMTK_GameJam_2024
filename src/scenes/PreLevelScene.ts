@@ -34,6 +34,11 @@ export class PreLevelScene extends Scene
 
 	public create(): void
 	{
+        if (!this.scene.isActive("GameBoyUiScene"))
+        {
+            this.scene.launch("GameBoyUiScene");
+        }
+
         const background = this.add.graphics({ fillStyle: { color: 0x0, alpha: 1 } });
         background.fillRectShape(new Geom.Rectangle(0, 0, 320, 320));
 

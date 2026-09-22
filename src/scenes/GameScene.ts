@@ -99,6 +99,7 @@ export class GameScene extends Scene
 			};
 			this.actionManager.onStep.addListener(explainReset, this);
 		}
+
 	}
 
 	public update(time: number, delta: number): void
