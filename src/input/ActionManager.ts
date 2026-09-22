@@ -153,7 +153,7 @@ export class ActionManager implements IInputs
         this.left.update();
         this.down.update();
         this.right.update();
-        // this.next.update();
+        // this.next.update(); // Turn on for debugging
         this.reset.update();
         this.undo.update();
 
