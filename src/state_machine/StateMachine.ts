@@ -5,10 +5,17 @@ type State<T> = BaseState<StateMachine<T>>;
 export class StateMachine<T>
 {
 	public get target(): T { return this._target; }
-	public get currentState(): State<T> { return this._currentState; }
+	public get currentState(): State<T>
+	{
+		if (this._currentState === undefined)
+		{
+			throw new Error("[StateMachine] Current state not defined yet.");
+		}
+		return this._currentState;
+	}
 
 	private _target: T;
-	private _currentState: State<T>;
+	private _currentState?: State<T>;
 	private _states: { [key: string]: State<T>; } = {};
 
 	public constructor(target: T)
@@ -28,7 +35,7 @@ export class StateMachine<T>
 
 	public changeState(stateKey: string): void
 	{
-		this._currentState.exit();
+		this.currentState.exit();
 		this._enterState(stateKey);
 	}
 

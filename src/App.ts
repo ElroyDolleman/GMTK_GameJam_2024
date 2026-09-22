@@ -6,7 +6,14 @@ import { PreLevelScene } from "./scenes/PreLevelScene";
 export const game = new Game({
 	type: Phaser.AUTO,
 	width: 320,
-	height: 320,
+	height: 480,
+	parent: "game-container",
+	scale: {
+		mode: Phaser.Scale.FIT,
+		autoCenter: Phaser.Scale.CENTER_HORIZONTALLY,
+		width: 320,
+		height: 480,
+	},
 	pixelArt: true,
 	zoom: 2,
 	backgroundColor: "#0x0",
