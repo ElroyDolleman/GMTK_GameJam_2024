@@ -32,6 +32,6 @@ export class GamePadUiScene extends Scene
 
     public update(_time: number, _delta: number): void
     {
-        
+        this._touchInputs.update();
     }
 }

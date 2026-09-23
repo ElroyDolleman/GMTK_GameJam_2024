@@ -115,6 +115,7 @@ export class GameScene extends Scene
 		this._tutorialText = undefined;
 		this.actionManager.disabled = true;
 
+		this.actionManager.destroy();
 		await this._screenTransition.transitionOut();
 
 		this._level.destroy();

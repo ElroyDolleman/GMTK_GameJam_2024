@@ -48,7 +48,9 @@ export class ActionManager implements IInputs
 
     public readonly onStep: GameEvent<number> = new GameEvent();
 
-    public static instance: ActionManager;
+    // Terrible but it was gamejam code :(
+    public static get instance(): ActionManager { return this._instance!; }
+    private static _instance: ActionManager | undefined;
 
     public get stepCount(): number { return this._actions.length; }
     public get noInputs(): boolean { return this.up.isUp && this.down.isUp && this.left.isUp && this.right.isUp; }
@@ -76,7 +78,7 @@ export class ActionManager implements IInputs
 
     public constructor(options: ActionManagerOptions)
     {
-        ActionManager.instance = this;
+        ActionManager._instance = this;
 
         this.level = options.level;
 
@@ -211,6 +213,11 @@ export class ActionManager implements IInputs
             ActionStatistics.amountOfAction++;
             // console.log("Step", this.stepCount);
         }
+    }
+
+    public destroy(): void
+    {
+        ActionManager._instance = undefined;
     }
 
     private _onMoved(): void
