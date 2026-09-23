@@ -11,6 +11,23 @@ type DpadCreationOptions = {
     originY: number
 }
 
+const DPAD_CENTER_X = 100;
+const DPAD_CENTER_Y = 80;
+const DPAD_BUTTON_OFFSET = 2;
+const DPAD_SCALE = 2;
+const DPAD_TEXTURE = "main";
+const DPAD_INACTIVE_FRAME = 1;
+const DPAD_ACTIVE_FRAME = 2;
+const DPAD_CENTER_ORIGIN = 0.5;
+const DPAD_EDGE_ORIGIN = 0;
+const DPAD_OUTER_ORIGIN = 1;
+const DPAD_HIT_AREAS: Record<DpadCreationOptions["linkedInput"], number[]> = {
+    up: [0, 0, 18, 0, 18, 20, 9, 24, 0, 20],
+    down: [0, 4, 9, 0, 18, 4, 18, 24, 0, 24],
+    left: [0, 0, 20, 0, 24, 9, 20, 18, 0, 18],
+    right: [0, 9, 4, 0, 24, 0, 24, 18, 4, 18]
+};
+
 export class TouchInputManager
 {
     private readonly _fallbackInputs: IInputs = {
@@ -38,10 +55,10 @@ export class TouchInputManager
         container.add(this._createRectButton("undo", 196, 60));
         container.add(this._createRectButton("reset", 242, 60));
 
-        container.add(this._createDpadButton({ linkedInput: "up", x: 100, y: 82, originX: 0.5, originY: 1 }));
-        container.add(this._createDpadButton({ linkedInput: "down", x: 100, y: 78, originX: 0.5, originY: 0 }));
-        container.add(this._createDpadButton({ linkedInput: "left", x: 102, y: 80, originX: 1, originY: 0.5 }));
-        container.add(this._createDpadButton({ linkedInput: "right", x: 98, y: 80, originX: 0, originY: 0.5 }));
+        container.add(this._createDpadButton({ linkedInput: "up", x: DPAD_CENTER_X, y: DPAD_CENTER_Y + DPAD_BUTTON_OFFSET, originX: DPAD_CENTER_ORIGIN, originY: DPAD_OUTER_ORIGIN }));
+        container.add(this._createDpadButton({ linkedInput: "down", x: DPAD_CENTER_X, y: DPAD_CENTER_Y - DPAD_BUTTON_OFFSET, originX: DPAD_CENTER_ORIGIN, originY: DPAD_EDGE_ORIGIN }));
+        container.add(this._createDpadButton({ linkedInput: "left", x: DPAD_CENTER_X + DPAD_BUTTON_OFFSET, y: DPAD_CENTER_Y, originX: DPAD_OUTER_ORIGIN, originY: DPAD_CENTER_ORIGIN }));
+        container.add(this._createDpadButton({ linkedInput: "right", x: DPAD_CENTER_X - DPAD_BUTTON_OFFSET, y: DPAD_CENTER_Y, originX: DPAD_EDGE_ORIGIN, originY: DPAD_CENTER_ORIGIN }));
     }
 
     public update()
@@ -52,8 +69,8 @@ export class TouchInputManager
     private _createDpadButton(options: DpadCreationOptions): Phaser.GameObjects.Sprite
     {
         const frameName = `dpad-button-${options.linkedInput}`;
-        const button = this._scene.add.sprite(options.x, options.y, "main", `${frameName}1`);
-        button.setScale(2);
+        const button = this._scene.add.sprite(options.x, options.y, DPAD_TEXTURE, `${frameName}${DPAD_INACTIVE_FRAME}`);
+        button.setScale(DPAD_SCALE);
         button.setOrigin(options.originX, options.originY);
         button.setInteractive(
             this._createDpadHitArea(options.linkedInput),
@@ -64,20 +81,20 @@ export class TouchInputManager
             if (pointer.isDown)
             {
                 this._inputs[options.linkedInput].setVirtualDown(true);
-                button.setFrame(`${frameName}2`);
+                button.setFrame(`${frameName}${DPAD_ACTIVE_FRAME}`);
             }
         });
         button.on("pointerdown", () => {
             this._inputs[options.linkedInput].setVirtualDown(true);
-            button.setFrame(`${frameName}2`);
+            button.setFrame(`${frameName}${DPAD_ACTIVE_FRAME}`);
         });
         button.on("pointerup", () => {
             this._inputs[options.linkedInput].setVirtualDown(false);
-            button.setFrame(`${frameName}1`);
+            button.setFrame(`${frameName}${DPAD_INACTIVE_FRAME}`);
         });
         button.on("pointerout", () => {
             this._inputs[options.linkedInput].setVirtualDown(false);
-            button.setFrame(`${frameName}1`);
+            button.setFrame(`${frameName}${DPAD_INACTIVE_FRAME}`);
         });
 
         return button;
@@ -85,14 +102,7 @@ export class TouchInputManager
 
     private _createDpadHitArea(direction: DpadCreationOptions["linkedInput"]): Phaser.Geom.Polygon
     {
-        const points: Record<DpadCreationOptions["linkedInput"], number[]> = {
-            up: [0, 0, 18, 0, 18, 20, 9, 24, 0, 20],
-            down: [0, 4, 9, 0, 18, 4, 18, 24, 0, 24],
-            left: [0, 0, 20, 0, 24, 9, 20, 18, 0, 18],
-            right: [0, 9, 4, 0, 24, 0, 24, 18, 4, 18]
-        };
-
-        return new Phaser.Geom.Polygon(points[direction]);
+        return new Phaser.Geom.Polygon(DPAD_HIT_AREAS[direction]);
     }
 
     private _createRectButton(linkedInput: keyof IInputs, x: number, y: number, width: number = 40, height: number = 40): Phaser.GameObjects.Graphics
