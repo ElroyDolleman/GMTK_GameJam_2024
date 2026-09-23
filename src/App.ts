@@ -5,7 +5,7 @@ import { PreLevelScene } from "./scenes/PreLevelScene";
 import { GamePadUiScene } from "./scenes/GamePadUiScene";
 
 const APP_WIDTH = 320;
-const APP_HEIGHT = 480;
+const APP_HEIGHT = 320+160;
 
 function copyScreenshotToClipboard(source: CanvasImageSource): void
 {

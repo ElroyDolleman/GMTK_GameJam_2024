@@ -7,7 +7,6 @@ body {
 
 #game-container {
 	width: 100%;
-	max-width: 640px;
 	margin-inline: auto !important;
 	min-height: 100dvh;
 	display: flex;
