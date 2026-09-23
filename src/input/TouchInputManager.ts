@@ -3,6 +3,14 @@ import { ActionManager } from "./ActionManager";
 import { IInputs } from "./IInputs";
 import { GameInput } from "./GameInput";
 
+type DpadCreationOptions = {
+    linkedInput: keyof Pick<IInputs, "up" | "left" | "down" | "right">,
+    x: number,
+    y: number,
+    originX: number,
+    originY: number
+}
+
 export class TouchInputManager
 {
     private readonly _fallbackInputs: IInputs = {
@@ -27,18 +35,64 @@ export class TouchInputManager
     {
         this._scene = scene;
 
-        container.add(this._createRectButton("up", 80, 20));
-        container.add(this._createRectButton("down", 80, 100));
-        container.add(this._createRectButton("left", 40, 60));
-        container.add(this._createRectButton("right", 120, 60));
-
         container.add(this._createRectButton("undo", 196, 60));
         container.add(this._createRectButton("reset", 242, 60));
+
+        container.add(this._createDpadButton({ linkedInput: "up", x: 100, y: 82, originX: 0.5, originY: 1 }));
+        container.add(this._createDpadButton({ linkedInput: "down", x: 100, y: 78, originX: 0.5, originY: 0 }));
+        container.add(this._createDpadButton({ linkedInput: "left", x: 102, y: 80, originX: 1, originY: 0.5 }));
+        container.add(this._createDpadButton({ linkedInput: "right", x: 98, y: 80, originX: 0, originY: 0.5 }));
     }
 
     public update()
     {
         
+    }
+
+    private _createDpadButton(options: DpadCreationOptions): Phaser.GameObjects.Sprite
+    {
+        const frameName = `dpad-button-${options.linkedInput}`;
+        const button = this._scene.add.sprite(options.x, options.y, "main", `${frameName}1`);
+        button.setScale(2);
+        button.setOrigin(options.originX, options.originY);
+        button.setInteractive(
+            this._createDpadHitArea(options.linkedInput),
+            Phaser.Geom.Polygon.Contains
+        );
+
+        button.on("pointerover", (pointer: Phaser.Input.Pointer) => {
+            if (pointer.isDown)
+            {
+                this._inputs[options.linkedInput].setVirtualDown(true);
+                button.setFrame(`${frameName}2`);
+            }
+        });
+        button.on("pointerdown", () => {
+            this._inputs[options.linkedInput].setVirtualDown(true);
+            button.setFrame(`${frameName}2`);
+        });
+        button.on("pointerup", () => {
+            this._inputs[options.linkedInput].setVirtualDown(false);
+            button.setFrame(`${frameName}1`);
+        });
+        button.on("pointerout", () => {
+            this._inputs[options.linkedInput].setVirtualDown(false);
+            button.setFrame(`${frameName}1`);
+        });
+
+        return button;
+    }
+
+    private _createDpadHitArea(direction: DpadCreationOptions["linkedInput"]): Phaser.Geom.Polygon
+    {
+        const points: Record<DpadCreationOptions["linkedInput"], number[]> = {
+            up: [0, 0, 18, 0, 18, 20, 9, 24, 0, 20],
+            down: [0, 4, 9, 0, 18, 4, 18, 24, 0, 24],
+            left: [0, 0, 20, 0, 24, 9, 20, 18, 0, 18],
+            right: [0, 9, 4, 0, 24, 0, 24, 18, 4, 18]
+        };
+
+        return new Phaser.Geom.Polygon(points[direction]);
     }
 
     private _createRectButton(linkedInput: keyof IInputs, x: number, y: number, width: number = 40, height: number = 40): Phaser.GameObjects.Graphics

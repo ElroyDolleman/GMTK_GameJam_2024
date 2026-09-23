@@ -2,7 +2,7 @@ import { Game } from "phaser";
 import { GameScene } from "./scenes/GameScene";
 import { EndingScene } from "./scenes/EndingScene";
 import { PreLevelScene } from "./scenes/PreLevelScene";
-import { GameBoyUiScene } from "./scenes/GameBoyUiScene";
+import { GamePadUiScene } from "./scenes/GamePadUiScene";
 
 const APP_WIDTH = 320;
 const APP_HEIGHT = 480;
@@ -57,7 +57,7 @@ export const game = new Game({
 	title: "GMTK Game Jam 2024",
 	version: "0.2.0",
 	disableContextMenu: true,
-	scene: [ PreLevelScene, GameScene, EndingScene, GameBoyUiScene ],
+	scene: [ PreLevelScene, GameScene, EndingScene, GamePadUiScene ],
 	fps: {
         target: 60,
         min: 60,

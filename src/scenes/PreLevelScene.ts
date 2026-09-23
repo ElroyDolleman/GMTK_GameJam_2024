@@ -34,9 +34,9 @@ export class PreLevelScene extends Scene
 
 	public create(): void
 	{
-        if (!this.scene.isActive("GameBoyUiScene"))
+        if (!this.scene.isActive("GamePadUiScene"))
         {
-            this.scene.launch("GameBoyUiScene");
+            this.scene.launch("GamePadUiScene");
         }
 
         const background = this.add.graphics({ fillStyle: { color: 0x0, alpha: 1 } });

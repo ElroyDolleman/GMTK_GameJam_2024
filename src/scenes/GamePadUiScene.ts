@@ -1,13 +1,13 @@
 import { Scene } from "phaser";
 import { TouchInputManager } from "../input/TouchInputManager";
 
-export class GameBoyUiScene extends Scene
+export class GamePadUiScene extends Scene
 {
     private _touchInputs!: TouchInputManager;
 
     public constructor()
     {
-        super("GameBoyUiScene");
+        super("GamePadUiScene");
     }
 
     public preload(): void
@@ -25,10 +25,7 @@ export class GameBoyUiScene extends Scene
         panel.lineStyle(2, 0x0f380f, 1);
         panel.strokeRect(4, 4, 312, 152);
 
-        // const dpad = this.add.sprite(60, 60, "main", "input-dpad1");
-
         container.add(panel);
-        // container.add(dpad);
 
         this._touchInputs = new TouchInputManager(this, container);
     }
